@@ -1,0 +1,26 @@
+Package: spatialfingerprints
+Title: Research compendium
+Version: 0.0.0.9000
+Date: 2020-03-27
+Authors@R: c(
+  person("Kevin", "Cazelles", email = "kcazelle@uoguelph.ca", comment = c(ORCID = "0000-0001-6619-9874"), role = c("aut", "cre"))
+  )
+Description: Research compendium DOI 2B added.
+URL: https://github.com/McCannLab/spatial_fingerprints
+BugReports: https://github.com/McCannLab/spatial_fingerprints/issues
+Depends:
+    R (>= 3.5)
+Imports:
+    graphics,
+    grDevices,
+    inSilecoMisc,
+    latex2exp,
+    logitnorm,
+    stats
+Remotes:
+  inSileco/inSilecoMisc
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
