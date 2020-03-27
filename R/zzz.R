@@ -1,7 +1,10 @@
 #' @importFrom graphics lines par plot points
+#' @importFrom graphicsutils plot0
 #' @importFrom grDevices dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess
 #' @importFrom latex2exp TeX
+#' @importFrom mvtnorm dmvnorm rmvnorm
+#' @importFrom progress progress_bar
 #' @importFrom stats dchisq dnorm integrate rnorm
 
 NULL

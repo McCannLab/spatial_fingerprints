@@ -7,6 +7,8 @@
 pipeline <- function() {
   #
   set.seed(7891)
+  df_all <- system.file("extdata", "isoready.csv", package =
+    "spatialfingerprints")   
   #
   msgInfo("SI Figures")
   scr_theory()

@@ -12,13 +12,17 @@ Depends:
     R (>= 3.5)
 Imports:
     graphics,
+    graphicsutils,
     grDevices,
     inSilecoMisc,
     latex2exp,
     logitnorm,
+    mvtnorm,
+    progress,
     stats
 Remotes:
-  inSileco/inSilecoMisc
+  inSileco/inSilecoMisc,
+  inSileco/graphicsutils
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
