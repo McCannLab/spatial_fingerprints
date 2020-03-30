@@ -3,12 +3,14 @@
 #' Code to reproduce analysis in the Supplementary information. Also, this
 #' script creates figures S1, S2, S3 and S4.
 #'
-#' @param nrep number of replicates.
+#' @param nrep number of replicates for figure S1, S3 and S4.
+#' @param nrep2 number of replicates for figures S1, S5 and S6.
 #' @param mx_sp_sz maximum sample size value.
+#' @param rerun a logical. Should simulations be rerun for figures S5 and S6.
 #'
 #' @export
 
-scr_theory <- function(nrep = 1e4, mx_sp_sz = 50) {
+scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
 
   # sequence of sample sizes
   nsz <- seq_len(mx_sp_sz)
@@ -66,22 +68,26 @@ scr_theory <- function(nrep = 1e4, mx_sp_sz = 50) {
     n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), rep(.2, 2), rep(1, 2)),
     n_norm_simu(nsz, nrep, rep(0, 3), rep(1, 3), rep(.2, 3), rep(1, 3)),
     n_norm_simu(nsz, nrep, rep(0, 5), rep(1, 5), rep(.2, 5), rep(1, 5)),
-    n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), c(.2, .5), rep(1, 2)),
+    n_norm_simu(nsz, nrep, rep(0, 10), rep(1, 10), rep(.2, 10), rep(1, 10)),
     n_norm_simu(nsz, nrep, rep(0, 20), rep(1, 20), rep(.2, 20), rep(1, 20))
   )
   res_ana <- list(
     mu_val_n(c(0, 0), c(.2, .2), 1, nsz),
     mu_val_n(rep(0, 3), rep(.2, 3), 1, nsz),
     mu_val_n(rep(0, 5), rep(.2, 5), 1, nsz),
-    mu_val_n(c(0, 0), c(.2, .5), 1, nsz),
+    mu_val_n(rep(0, 10), rep(.2, 10), 1, nsz),
     mu_val_n(rep(0, 20), rep(.2, 20), 1, nsz)
   )
   plot_si("output/figS4.png", nsz, res_sim, res_ana)
   msgSuccess_fig("S4")
 
 
-  ## Correlation
+  ## Correlation 2-10
   msgInfo("Running simulations for figure S5")
+  scr_corr2("output/figS5.png", nrep2, rerun)
+
+  ## Correlation 1-10
+  # msgInfo("Running simulations for figure S6")
 
 
 
@@ -132,13 +138,50 @@ plot_log_ratio <- function(filename) {
 }
 
 
+scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE) {
+
+  if (rerun) {
+    # takes ~1h for nrep = 1e5 (1CPU intel i7)
+    df_res <- simu_corr_2(nrep)
+    #  saveRDS(df_res, "inst/extdata/res_corr_2.rds")
+  } else {
+    df_res<- readRDS(
+      system.file("extdata", "res_corr_2.rds", package = "spatialfingerprints")
+    )
+  }
+  ls_res <- split(df_res$prob, f = df_res$corel)
+  seqsize <- unique(df_res$sample_size)
+
+  # create output dir if needed
+  output_dir()
+
+  png(filename, units = "in", width = 5.5, height = 5, res = 600)
+    par(las = 1, mar = c(4.25, 4.25, 2, .5), mgp = c(2.6, .65, 0))
+    pal2 <- rev(colorRampPalette(c("black", "grey70"))(length(ls_res)))
+    plot0(c(0, 50), c(.5, 1))
+    for (i in seq_along(ls_res))
+      lines(seqsize, ls_res[[i]], col = pal2[i], lwd = 1.4)
+    axis(1)
+    axis(2)
+    box(lwd = 1.2, bty = "l")
+    title(xlab = "Sample Size", ylab = TeX("\\[A_1|S\\]"))
+    text(10, 0.8, labels = TeX("$\\rho = 0.99$"), col = "black", pos = 4)
+    text(10, 0.92, labels = TeX("$\\rho = 0$"), col = "grey70", pos = 2)
+  dev.off()
+
+  msgSuccess_fig("S5")
+
+  invisible(NULL)
+}
+
+
 
 
 ## Simulation functions
 
 # vc_sz: vector of size
 # nrep: number of replicates
-# mu: mu paramters for the 2 distributions
+# mu: mu parameters for the 2 distributions
 # si: si parameters for the 2 distribution
 
 twonorm_simu <- function(vc_sz, nrep, mu, si) {
@@ -216,7 +259,6 @@ si_val <- function(n, si) {
 
 
 # function log(ratio), for figS3
-
 log_ratios <- function(x, n) {
   x <- sort(x)
   vp <- vn <- double(length(x))
@@ -228,31 +270,55 @@ log_ratios <- function(x, n) {
 }
 
 
+# functions to be used with mutidimensional normal distribution
+
+## LL for multivariate normal
+LogLik2 <- function(val, mean, sigma) {
+  sum(dmvnorm(val, mean, sigma = sigma, log = TRUE))
+}
+
+getProb <- function(val, mu1 = c(0,0), mu2 = c(1/sqrt(2), 1/sqrt(2)), sigma) {
+    1/(1 + exp(LogLik2(val, mu2, sigma) - LogLik2(val, mu1, sigma)))
+}
 
 
 
-# integrate(log_chi, 0, Inf, n = x, si = si)$value)
-#
-#
-# foo <- function(x, r, n) {
-#   1/(1 + r^(n/2) * exp(-.5 * (r-1)*x))
-# }
 
+simu_corr_2 <- function(nrep = 1e4) {
+  ### COVARIANCE
+  nvar <- 2
+  npt <- 6
+  nss <- 10
+  # correlation values
+  seqc <- rev(seq(0, .99, length = npt))
+  seqsize <- c(1:5, 10, 15, 20, 30, 40, 50)
+  ##
+  Sigma <- matrix(0, nvar, nvar)
+  diag(Sigma) <- 1
+  mu1 <- c(0, 0)
+  ##
+  df_res <- data.frame(
+    sample_size = rep(seqsize, length(seqc)),
+    corel = rep(seqc, each = length(seqsize)),
+    prob = NA_real_,
+    sd = NA_real_
+  )
 
-# sqx <- 10^seq(-2, 2, .01)
-# plot(sqx, foo(sqx, 2, 10), type = "l")
-# lines(sqx, foo(sqx, .2, 10), type = "l")
-# lines(sqx, foo(sqx, 1, 10), type = "l")
+  pb <- progress_bar$new(format = paste0(cli::symbol$info,
+      "computing [:bar] :percent eta: :eta"),
+      total = nrow(df_res), clear = FALSE, width = 60)
+  for (i in seq_len(nrow(df_res))) {
+      pb$tick()
+      ## correlation
+      Sigma[cbind(c(1,2), c(2,1))] <- df_res$corel[i]
+      ## use default mu values, i.e. c(0, 0) and c(1/sqrt(2), 1/sqrt(2))
+      tmp <- replicate(nrep, getProb(
+          rmvnorm(df_res$sample_size[i], mean = mu1, sigma = Sigma),
+          sigma = Sigma))
+      ##
+      df_res$prob[i] <- mean(tmp)
+      df_res$sd[i] <- sd(tmp)
+  }
 
-
-
-# ```
-# from sage.functions.other import symbolic_limit as slimit
-# n = var('n')
-# x = var('x')
-# y = var('y')
-# f(y) = (1/2)^(n/2)*(1/gamma(n/2, hold = True))*y^(n/2-1)*exp(-y/2)/(1+x^n*exp(-1/2*(x^2-1)*y))
-# assume(n = 1)
-# assume(x > 1)
-# integrate(f(y), y, 0, infinity)
-# ```
+  df_res
+}

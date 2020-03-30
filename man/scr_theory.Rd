@@ -4,12 +4,16 @@
 \alias{scr_theory}
 \title{Theory script}
 \usage{
-scr_theory(nrep = 10000, mx_sp_sz = 50)
+scr_theory(nrep = 10000, nrep2 = 1e+05, mx_sp_sz = 50, rerun = FALSE)
 }
 \arguments{
-\item{nrep}{number of replicates.}
+\item{nrep}{number of replicates for figure S1, S3 and S4.}
+
+\item{nrep2}{number of replicates for figures S1, S5 and S6.}
 
 \item{mx_sp_sz}{maximum sample size value.}
+
+\item{rerun}{a logical. Should simulations be rerun for figures S5 and S6.}
 }
 \description{
 Code to reproduce analysis in the Supplementary information. Also, this

@@ -1,11 +1,11 @@
-#' @importFrom graphics abline axis box lines par plot points
+#' @importFrom graphics abline axis box lines par plot points text title
 #' @importFrom graphicsutils plot0
 #' @importFrom grDevices colorRampPalette dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess
 #' @importFrom latex2exp TeX
 #' @importFrom mvtnorm dmvnorm rmvnorm
 #' @importFrom progress progress_bar
-#' @importFrom stats dchisq dnorm integrate rnorm
+#' @importFrom stats dchisq dnorm integrate rnorm sd
 
 NULL
 
