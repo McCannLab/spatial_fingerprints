@@ -1,6 +1,6 @@
-#' @importFrom graphics lines par plot points
+#' @importFrom graphics abline axis box lines par plot points
 #' @importFrom graphicsutils plot0
-#' @importFrom grDevices dev.off png
+#' @importFrom grDevices colorRampPalette dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess
 #' @importFrom latex2exp TeX
 #' @importFrom mvtnorm dmvnorm rmvnorm

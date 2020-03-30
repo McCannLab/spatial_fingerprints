@@ -12,5 +12,6 @@ scr_theory(nrep = 10000, mx_sp_sz = 50)
 \item{mx_sp_sz}{maximum sample size value.}
 }
 \description{
-Code to reproduce analysis for figures S1 and S2.
+Code to reproduce analysis in the Supplementary information. Also, this
+script creates figures S1, S2, S3 and S4.
 }

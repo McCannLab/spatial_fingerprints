@@ -1,97 +1,135 @@
 #' Theory script
 #'
-#' Code to reproduce analysis for figures S1 and S2.
+#' Code to reproduce analysis in the Supplementary information. Also, this
+#' script creates figures S1, S2, S3 and S4.
 #'
 #' @param nrep number of replicates.
 #' @param mx_sp_sz maximum sample size value.
 #'
 #' @export
+
 scr_theory <- function(nrep = 1e4, mx_sp_sz = 50) {
 
   # sequence of sample sizes
   nsz <- seq_len(mx_sp_sz)
 
-  cex_pt <- 1.25
-
-  ## mu
-  msgInfo("Running Simulation for figure S1")
-  res1 <- twonorm_simu(nsz, nrep, c(0, .5), c(2, 2))
-  res2 <- twonorm_simu(nsz, nrep, c(0, .5), c(1, 1))
-  res3 <- twonorm_simu(nsz, nrep, c(0, 1), c(1, 1))
-
   # create output dir if needed
   output_dir()
 
   ## Dissimilarity - MU
-  png("output/fig_S1.png", width = 5.5, height = 5, units = "in", res = 300)
-    par(las = 1, bty = "l", mar = c(4.5, 4.5, 2, .5))
-    plot(nsz, res1, ylim = c(.5, 1), cex = cex_pt, pch = 19,
-      xlab = "Sample size", ylab = TeX("$E(\\[A_1|S\\])$"))
-    lines(nsz, mu_val(c(0, .5), 2 , nsz), col = 2, lwd = 2)
-  #
-    points(nsz, res2, cex = cex_pt, pch = 19, col = "grey30")
-    lines(nsz, mu_val(c(0, .5), 1 , nsz), col = 2, lwd = 2)
-  #
-    points(nsz, res3, cex = cex_pt, pch = 19, col = "grey60")
-    lines(nsz, mu_val(c(0, 1), 1 , nsz), col = 2, lwd = 2)
-  dev.off()
-
+  msgInfo("Running Simulations for figure S1")
+  res_sim <- list(
+    twonorm_simu(nsz, nrep, c(0, .1), c(1, 1)),
+    twonorm_simu(nsz, nrep, c(0, .25), c(1, 1)),
+    twonorm_simu(nsz, nrep, c(0, .5), c(1, 1)),
+    twonorm_simu(nsz, nrep, c(0, 1), c(1, 1)),
+    twonorm_simu(nsz, nrep, c(0, 1), c(.5, .5))
+  )
+  res_ana <- list(
+    mu_val(c(0, .1), 1, nsz),
+    mu_val(c(0, .25), 1, nsz),
+    mu_val(c(0, .5), 1, nsz),
+    mu_val(c(0, 1), 1, nsz),
+    mu_val(c(0, 1), .5, nsz)
+  )
+  plot_si("output/figS1.png", nsz, res_sim, res_ana)
   msgSuccess_fig("S1")
 
 
   ## Dissimilarity - SIGMA
-  msgInfo("Running Simulation for figure S2")
-  res1 <- twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.2))
-  res2 <- twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.5))
-  res3 <- twonorm_simu(nsz, nrep, c(0, 0), c(1, 2))
-
-  png("output/fig_S2.png", width = 5.5, height = 5, units = "in", res = 300)
-    par(las = 1, bty = "l", mar = c(4.5, 4.5, 2, .5))
-    plot(nsz, res1, ylim = c(.5, 1), cex = cex_pt, pch = 19,
-        xlab = "Sample size", ylab = TeX("$E(\\[A_1|S\\])$"))
-    lines(nsz, si_val(nsz, c(1, 1.2)), col = 2, lwd = 2)
-  #
-    points(nsz, res2, cex = cex_pt, pch = 19, col = "grey30")
-    lines(nsz, si_val(nsz, c(1, 1.5)), col = 2, lwd = 2)
-  #
-    points(nsz, res3, cex = cex_pt, pch = 19, col = "grey60")
-    lines(nsz, si_val(nsz, c(1, 2)), col = 2, lwd = 2)
-  dev.off()
-
+  msgInfo("Creating figure S2")
+  plot_log_ratio("output/figS2.png")
   msgSuccess_fig("S2")
+
+  msgInfo("Running simulations for figure S3")
+  res_sim <- list(
+    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1)),
+    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.2)),
+    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.5)),
+    twonorm_simu(nsz, nrep, c(0, 0), c(1, 2)),
+    twonorm_simu(nsz, nrep, c(0, 0), c(1, 5))
+  )
+  res_ana <- list(
+    si_val(nsz, c(1, 1)),
+    si_val(nsz, c(1, 1.2)),
+    si_val(nsz, c(1, 1.5)),
+    si_val(nsz, c(1, 2)),
+    si_val(nsz, c(1, 5))
+  )
+  plot_si("output/figS3.png", nsz, res_sim, res_ana)
+  msgSuccess_fig("S3")
 
 
   ## Dissimilarity - MU with 2, 5 and 10 observations
-  msgInfo("Running Simulation for figure S3")
-  res1 <- n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), rep(.2, 2), rep(1, 2))
-  res2 <- n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), c(.2, .4), rep(1, 2))
-  res3 <- n_norm_simu(nsz, nrep, rep(0, 10), rep(1, 10), rep(.2, 10), rep(1, 10))
+  msgInfo("Running simulations for figure S4")
+  res_sim <- list(
+    n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), rep(.2, 2), rep(1, 2)),
+    n_norm_simu(nsz, nrep, rep(0, 3), rep(1, 3), rep(.2, 3), rep(1, 3)),
+    n_norm_simu(nsz, nrep, rep(0, 5), rep(1, 5), rep(.2, 5), rep(1, 5)),
+    n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), c(.2, .5), rep(1, 2)),
+    n_norm_simu(nsz, nrep, rep(0, 20), rep(1, 20), rep(.2, 20), rep(1, 20))
+  )
+  res_ana <- list(
+    mu_val_n(c(0, 0), c(.2, .2), 1, nsz),
+    mu_val_n(rep(0, 3), rep(.2, 3), 1, nsz),
+    mu_val_n(rep(0, 5), rep(.2, 5), 1, nsz),
+    mu_val_n(c(0, 0), c(.2, .5), 1, nsz),
+    mu_val_n(rep(0, 20), rep(.2, 20), 1, nsz)
+  )
+  plot_si("output/figS4.png", nsz, res_sim, res_ana)
+  msgSuccess_fig("S4")
 
-  png("output/fig_S3.png", width = 5.5, height = 5, units = "in", res = 600)
-    par(las = 1, bty = "l", mar = c(4.5, 4.5, 2, .5))
-    plot(nsz, res1, ylim = c(.5, 1), cex = cex_pt, pch = 19,
-        xlab = "Sample size", ylab = TeX("$E(\\[A_1|S\\])$"))
-    lines(nsz, mu_val_n(c(0, 0), c(.2, .2),  1, nsz), col = 2, lwd = 2)
-  #
-    points(nsz, res2, cex = cex_pt, pch = 19, col = "grey30")
-    lines(nsz, mu_val_n(c(0, 0), c(.2, .4),  1, nsz), col = 2, lwd = 2)
-    # lines(nsz, mu_val_n(rep(0, 5), rep(.2, 5),  1, nsz), col = 2, lwd = 2)
-  #
-    points(nsz, res3, cex = cex_pt, pch = 19, col = "grey60")
-    lines(nsz, mu_val_n(rep(0, 10), rep(.2, 10),  1, nsz), col = 2, lwd = 2)
-  dev.off()
+
+  ## Correlation
+  msgInfo("Running simulations for figure S5")
 
 
-  msgSuccess_fig("S3")
+
   invisible(NULL)
 }
 
 
 
 
+plot_si <- function(filename, seqx, res_sim, res_ana, cex_pt = 1.1) {
+  png(filename, width = 5.5, height = 5, units = "in", res = 600)
+    par(las = 1, bty = "l", mar = c(4.25, 4.25, 2, .5), mgp = c(2.6, .65, 0))
+    n <- length(res_sim)
+    pal <- colorRampPalette(c("black", "grey80"))(n)
+    plot(range(seqx), y = c(.5, 1), cex = cex_pt, pch = 19, type = "n",
+        xlab = "Sample size", ylab = TeX("$E(\\[A_1|S\\])$"))
+    for (i in seq_len(n)) {
+      points(seqx, res_sim[[i]], cex = cex_pt, pch = 19, col = pal[i])
+      lines(seqx, res_ana[[i]], col = 2, lwd = 1.4)
+    }
+  dev.off()
+}
 
 
+plot_log_ratio <- function(filename) {
+  n <- c(1, 2.5, 5, 10, 25)
+  pal <- colorRampPalette(c("black", "grey80"))(length(n))
+  sqx <- seq(0.01, 1, .01)
+  sqxx <- c(rev(-sqx), 0, sqx)
+  png(filename, width = 5.5, height = 5, units = "in", res = 600)
+    par(las = 1, bty = "l", mar = c(4.5, 4.6, 2, .5), mgp = c(3.15, .65, 0),
+      yaxs = "i", xaxs = "i", las = 1)
 
+    plot(range(sqxx), c(.5, 1), type = "n", axes = FALSE, ylim = c(.49, 1.01),
+      xlim = c(-1.04, 1.04), xlab = expression(frac(sigma[1], sigma[2])),
+      ylab = TeX("$E(\\[A_1|S\\])$"))
+    abline(v = 0, lty = 2)
+    for (i in seq_along(n)) {
+      lines(sqxx, log_ratios(sqx, n[i]), lwd = 1.4, col = pal[i])
+    }
+    axis(2)
+    sql <- c(2, 5, 10)
+    axis(1, at = c(rev(-log10(sql)), 0, log10(sql)),
+      labels = c(rev(-sql), 1, sql))
+    box(bty = "l")
+  dev.off()
+  invisible(NULL)
+}
 
 
 
@@ -176,3 +214,45 @@ si_val <- function(n, si) {
   )
 }
 
+
+# function log(ratio), for figS3
+
+log_ratios <- function(x, n) {
+  x <- sort(x)
+  vp <- vn <- double(length(x))
+  for (i in seq_along(x)) {
+    vp[i] <- integrate(log_chi, 0, Inf, n = n, si = c(1, 10^(x[i])))$value
+    vn[i] <- integrate(log_chi, 0, Inf, n = n, si = c(1, 10^(-x[i])))$value
+  }
+  c(rev(vn), .5, vp)
+}
+
+
+
+
+
+# integrate(log_chi, 0, Inf, n = x, si = si)$value)
+#
+#
+# foo <- function(x, r, n) {
+#   1/(1 + r^(n/2) * exp(-.5 * (r-1)*x))
+# }
+
+
+# sqx <- 10^seq(-2, 2, .01)
+# plot(sqx, foo(sqx, 2, 10), type = "l")
+# lines(sqx, foo(sqx, .2, 10), type = "l")
+# lines(sqx, foo(sqx, 1, 10), type = "l")
+
+
+
+# ```
+# from sage.functions.other import symbolic_limit as slimit
+# n = var('n')
+# x = var('x')
+# y = var('y')
+# f(y) = (1/2)^(n/2)*(1/gamma(n/2, hold = True))*y^(n/2-1)*exp(-y/2)/(1+x^n*exp(-1/2*(x^2-1)*y))
+# assume(n = 1)
+# assume(x > 1)
+# integrate(f(y), y, 0, infinity)
+# ```

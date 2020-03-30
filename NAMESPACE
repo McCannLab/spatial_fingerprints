@@ -2,8 +2,12 @@
 
 export(pipeline)
 export(scr_theory)
+importFrom(grDevices,colorRampPalette)
 importFrom(grDevices,dev.off)
 importFrom(grDevices,png)
+importFrom(graphics,abline)
+importFrom(graphics,axis)
+importFrom(graphics,box)
 importFrom(graphics,lines)
 importFrom(graphics,par)
 importFrom(graphics,plot)
