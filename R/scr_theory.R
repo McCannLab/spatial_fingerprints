@@ -85,11 +85,29 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
   ## Correlation 2-10
   msgInfo("Running simulations for figure S5")
   scr_corr2("output/figS5.png", nrep2, rerun)
+  msgSuccess_fig("S5")
 
   ## Correlation 1-10
-  # msgInfo("Running simulations for figure S6")
+  msgInfo("Running simulations for figure S6")
+  if (rerun) {
+    # takes ~20min for 1e4 repetitions (1 CPU i7)
+    res <- simu_corr_10(nrep2)
+    saveRDS(res, "inst/extdata/res_corr_10.rds")
+  } else {
+    res <- system.file("extdata", "res_corr_10.rds",
+      package = "spatialfingerprints")
+  }
 
-
+  png("output/figS6.png", width = 5.5, height = 5, units = "in", res = 600)
+    par(mar = c(4.5, 4.5, 1, 1), las = 1)
+    plot(res$dim-res$cor, res$res, type = "l", lwd = 2, lend = 1,
+      ann = FALSE, axes = FALSE)
+    axis(1)
+    axis(2)
+    box(bty = "l", lwd = 1.2)
+    title(xlab = "Dimensionality", ylab = TeX("E(\\[A_1|S\\])"))
+  dev.off()
+  msgSuccess_fig("S6")
 
   invisible(NULL)
 }
@@ -138,7 +156,8 @@ plot_log_ratio <- function(filename) {
 }
 
 
-scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE) {
+# Simulation fof figS5
+scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE, cex_pt = .7) {
 
   if (rerun) {
     # takes ~1h for nrep = 1e5 (1CPU intel i7)
@@ -159,12 +178,14 @@ scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE) {
     par(las = 1, mar = c(4.25, 4.25, 2, .5), mgp = c(2.6, .65, 0))
     pal2 <- rev(colorRampPalette(c("black", "grey70"))(length(ls_res)))
     plot0(c(0, 50), c(.5, 1))
-    for (i in seq_along(ls_res))
+    for (i in seq_along(ls_res)) {
+      points(seqsize, ls_res[[i]], col = pal2[i], pch = 19, cex = cex_pt)
       lines(seqsize, ls_res[[i]], col = pal2[i], lwd = 1.4)
+    }
     axis(1)
     axis(2)
     box(lwd = 1.2, bty = "l")
-    title(xlab = "Sample Size", ylab = TeX("\\[A_1|S\\]"))
+    title(xlab = "Sample Size", ylab = TeX("$E(\\[A_1|S\\])$"))
     text(10, 0.8, labels = TeX("$\\rho = 0.99$"), col = "black", pos = 4)
     text(10, 0.92, labels = TeX("$\\rho = 0$"), col = "grey70", pos = 2)
   dev.off()
@@ -175,9 +196,49 @@ scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE) {
 }
 
 
+simu_corr_10 <- function(nrep = 1e5, npt = 10, nvar = 10) {
+  # correlation sequence
+  seqc <- seq(0,.99, length = npt)
+  #
+  lsres <- list()
+  ssz <- 25
+  l <- 0
+  d <- 1 # pic size
+  Sigma <- matrix(.99, nvar, nvar)
+  diag(Sigma) <- 1
+  ##--
+  mu1 <- rep(0, nvar)
+  mu2 <- rep(1/sqrt(2*nvar), nvar)
+  ##--
+  pb <- progress_bar$new(format = paste0(cli::symbol$info,
+      "computing [:bar] :percent eta: :eta"),
+      total = (nvar - 1)*npt, clear = FALSE, width = 60)
+  ##
+  for (i in 2:nvar) {
+    id <- (1:nvar)[-(2:i)]
+    for (j in seq_along(seqc)) {
+      pb$tick()
+      Sigma[i,id] <- Sigma[id,i] <- 0.99 - seqc[j]
+      tmp <- replicate(nrep, getProb(
+          rmvnorm(ssz, mean = mu1, sigma = Sigma),
+          mu1 = mu1,  mu2 = mu2, sigma = Sigma))
+      l <- l+1
+      ##-- build a data frame
+      lsres[[l]] <- data.frame(
+        dim = i,
+        cor = 0.99 - seqc[j],
+        res = mean(tmp),
+        res_sd = sd(tmp)
+        )
+    }
+  }
+  do.call(rbind, lsres)
+}
 
 
-## Simulation functions
+
+
+## Simulation helper functions
 
 # vc_sz: vector of size
 # nrep: number of replicates
