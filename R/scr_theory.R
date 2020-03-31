@@ -90,18 +90,18 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
   ## Correlation 1-10
   msgInfo("Running simulations for figure S6")
   if (rerun) {
-    # takes ~20min for 1e4 repetitions (1 CPU i7)
+    # takes ~3h for 1e5 repetitions (1 CPU i7)
     res <- simu_corr_10(nrep2)
     saveRDS(res, "inst/extdata/res_corr_10.rds")
   } else {
-    res <- system.file("extdata", "res_corr_10.rds",
-      package = "spatialfingerprints")
+    res <- readRDS(system.file("extdata", "res_corr_10.rds",
+      package = "spatialfingerprints"))
   }
 
   png("output/figS6.png", width = 5.5, height = 5, units = "in", res = 600)
     par(mar = c(4.5, 4.5, 1, 1), las = 1)
-    plot(res$dim-res$cor, res$res, type = "l", lwd = 2, lend = 1,
-      ann = FALSE, axes = FALSE)
+    plot(res$dim-res$cor, res$res, pch = 19, cex = .7, lwd = 2, lend = 1,
+      ann = FALSE, axes = FALSE, ylim = c(.6, 1), yaxs = "i")
     axis(1)
     axis(2)
     box(bty = "l", lwd = 1.2)
@@ -189,8 +189,6 @@ scr_corr2 <- function(filename, nrep = 1e5, rerun = FALSE, cex_pt = .7) {
     text(10, 0.8, labels = TeX("$\\rho = 0.99$"), col = "black", pos = 4)
     text(10, 0.92, labels = TeX("$\\rho = 0$"), col = "grey70", pos = 2)
   dev.off()
-
-  msgSuccess_fig("S5")
 
   invisible(NULL)
 }
