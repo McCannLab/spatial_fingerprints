@@ -1,11 +1,14 @@
-#' @importFrom graphics abline axis box lines par plot points text title
-#' @importFrom graphicsutils plot0
+#' @importFrom graphics abline axis box image layout lines par plot
+#' @importFrom graphics points text title
+#' @importFrom graphicsutils plot0 gpuPalette
 #' @importFrom grDevices colorRampPalette dev.off png
-#' @importFrom inSilecoMisc msgInfo msgSuccess
+#' @importFrom inSilecoMisc msgInfo msgSuccess scaleWithin
 #' @importFrom latex2exp TeX
 #' @importFrom mvtnorm dmvnorm rmvnorm
+#' @importFrom orthomap orthomap
 #' @importFrom progress progress_bar
 #' @importFrom stats dchisq dnorm integrate rnorm sd
+#' @importFrom sf st_as_sf st_geometry
 
 NULL
 

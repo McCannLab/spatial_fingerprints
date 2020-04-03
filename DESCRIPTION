@@ -19,11 +19,14 @@ Imports:
     latex2exp,
     logitnorm,
     mvtnorm,
+    orthomap,
     progress,
+    sf,
     stats
 Remotes:
-  inSileco/inSilecoMisc,
-  inSileco/graphicsutils
+    ahasverus/orthomap,
+    inSileco/inSilecoMisc,
+    inSileco/graphicsutils
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
