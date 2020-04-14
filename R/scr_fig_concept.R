@@ -4,6 +4,8 @@
 #'
 #' @export
 
+# add http://phylopic.org/image/3c098bb8-4158-4777-b567-80e48049409c/
+
 script_fig_concept <- function() {
 
   msgInfo("Creating figure 1")
@@ -100,5 +102,4 @@ other_version <- function() {
   ##
   dev.off()
 }
-
 
