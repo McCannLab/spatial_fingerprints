@@ -9,7 +9,7 @@
 #' @param toprob should the output be a probability.
 #'
 #' @details
-#' `ndistr + nsample` cannot exceed 30 with data in `df_all`
+#' `ndistr + nsample` cannot exceed 30 with data in `df_all`.
 #'
 #' @export
 
