@@ -12,7 +12,7 @@
 #' @details
 #' * "lda" : linear discriminant analysis,
 #' * "nb" : naive bayesian,
-#' * "ml": machine learning,
+#' * "ml" : machine learning,
 #' * `ndistr + nsample` cannot exceed 30 with data in `df_all`.
 #'
 #' @export
@@ -30,7 +30,7 @@ find_origin <- function(method = c("lda", "nb", "ml"), df_dat, ndistr = 20,
     out <- switch(method,
       lda = scr_lda(df_dat, ndistr, nsample, noise, col_ids),
       nb = scr_nb(df_dat, ndistr, nsample, noise, col_ids),
-      ml = scr_ml(df_dat, ndistr, nsample, noise, col_ids)
+      ml = stop("implemented in Julia")
     )
 
     if (toprob) toprob(out) else out
@@ -104,36 +104,4 @@ scr_nb <- function(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19) 
   colnames(out) <- rownames(out) <- c("CA", "RS", "US")
   out
 }
-
-
-#' @describeIn find_origin core function for one hidden layer perceptron (ML) classifier.
-#' @export
-
-scr_ml <- function(df_dat = NULL, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19, toprob = TRUE) {
-
-  stop("Not implemented yet!")
-  # ls_val <- split(seq_along(df_dat$region), df_dat$region)
-  # ngeo <- length(unique(df_dat$region))
-  # ##
-  # tmp <- df_dat[col_ids]
-  # id <- lapply(ls_val, sample, size = ndistr + nsample)
-  # idd <- seq_len(ndistr)
-  # # use the same bandwith for all data
-  # out <- matrix(0, ngeo, ngeo)
-  # for (k in seq_along(col_ids)) {
-  #   for (j in seq_len(ngeo)) {
-  #     tmp2 <- tmp[id[[j]][idd], k]
-  #     if (noise)
-  #       tmp2 <- add_noise_v(tmp2, sd = noise)
-  #     train <- density(tmp2)
-  #     for (l in seq_len(ngeo)) {
-  #       smpl <- tmp[id[[l]][-idd], k]
-  #       ## use LL
-  #       out[l, j] <- out[l, j] + isos_likelihood(smpl, train)
-  #     }
-  #   }
-  # }
-  # out
-}
-
 

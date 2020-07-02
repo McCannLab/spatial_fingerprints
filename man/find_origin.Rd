@@ -4,7 +4,6 @@
 \alias{find_origin}
 \alias{scr_lda}
 \alias{scr_nb}
-\alias{scr_ml}
 \title{Core functions to asses overall performance of LDA, NB and ML.}
 \usage{
 find_origin(
@@ -20,15 +19,6 @@ find_origin(
 scr_lda(df_dat, ndistr = 20, nsample = 10, noise = 0, col_ids = 3:19)
 
 scr_nb(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19)
-
-scr_ml(
-  df_dat = NULL,
-  ndistr = 20,
-  nsample = 5,
-  noise = 0,
-  col_ids = 3:19,
-  toprob = TRUE
-)
 }
 \arguments{
 \item{method}{statistical approach, either "lda", "nb" or "ml".}
@@ -53,7 +43,7 @@ Core functions to asses overall performance of LDA, NB and ML.
 \itemize{
 \item "lda" : linear discriminant analysis,
 \item "nb" : naive bayesian,
-\item "ml": machine learning,
+\item "ml" : machine learning,
 \item \code{ndistr + nsample} cannot exceed 30 with data in \code{df_all}.
 }
 }
@@ -62,8 +52,6 @@ Core functions to asses overall performance of LDA, NB and ML.
 \item \code{scr_lda}: core function for LDA.
 
 \item \code{scr_nb}: core function for the Naive Bayesian (NB) classifier.
-
-\item \code{scr_ml}: core function for one hidden layer perceptron (ML) classifier.
 }}
 
 \examples{

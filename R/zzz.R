@@ -11,8 +11,8 @@
 #' @importFrom mvtnorm dmvnorm rmvnorm
 #' @importFrom orthomap orthomap
 #' @importFrom progress progress_bar
-#' @importFrom stats approx as.formula dchisq density dnorm integrate predict
-#' @importFrom stats rnorm sd
+#' @importFrom stats approx as.formula dchisq density dnorm integrate prcomp
+#' @importFrom stats predict rnorm sd
 #' @importFrom sf st_as_sf st_geometry
 #' @importFrom utils combn
 

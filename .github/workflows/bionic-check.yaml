@@ -19,13 +19,13 @@ jobs:
         run: |-
           echo "Set disable_coredump false" >> /etc/sudo.conf
           sudo apt-get update
-          sudo apt-get install -y hugo libudunits2-0 libudunits2-dev
+          sudo apt-get install -y texlive-fonts-recommended
+          sudo apt-get install -y libudunits2-0 libudunits2-dev
           sudo apt-get install -y libproj-dev libgeos-dev
           sudo apt-get install -y libgdal-dev r-cran-ncdf4
       - name: Query dependencies
         run: |
-          install.packages(c('remotes', 'tinytex'))
-          tinytex::install_tinytex()
+          install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
         shell: Rscript {0}
       - name: Cache R packages

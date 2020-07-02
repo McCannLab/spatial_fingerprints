@@ -2,6 +2,7 @@
 % Please edit documentation in R/scr_simulations.R
 \name{simu_nbio}
 \alias{simu_nbio}
+\alias{simu_nbio_order}
 \alias{simu_ndistr}
 \alias{simu_nsample}
 \alias{simu_noise}
@@ -15,6 +16,14 @@ simu_nbio(
   ndistr = 20,
   noise = 0,
   pca = FALSE
+)
+
+simu_nbio_order(
+  method = c("lda", "nb", "ml"),
+  nrep = 100,
+  nsample = 10,
+  ndistr = 20,
+  noise = 0
 )
 
 simu_ndistr(
@@ -73,6 +82,8 @@ total number of combinations is used.
 }
 \section{Functions}{
 \itemize{
+\item \code{simu_nbio_order}: same as \code{\link[=simu_nbio]{simu_nbio()}} but use pca and keep the axes ordered.
+
 \item \code{simu_ndistr}: effect of the number of samples used to build the distribution.
 
 \item \code{simu_nsample}: effect of the number of samples used for inference.
