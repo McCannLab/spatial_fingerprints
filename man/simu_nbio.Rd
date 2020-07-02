@@ -2,6 +2,7 @@
 % Please edit documentation in R/scr_simulations.R
 \name{simu_nbio}
 \alias{simu_nbio}
+\alias{simu_ndistr}
 \title{Simulation functions}
 \usage{
 simu_nbio(
@@ -10,6 +11,15 @@ simu_nbio(
   mxcb = 10,
   nsample = 10,
   ndistr = 20,
+  noise = 0
+)
+
+simu_ndistr(
+  method = c("lda", "nb", "ml"),
+  nrep = 20,
+  mxcb = 20,
+  nbio = 5,
+  nsample = 1,
   noise = 0
 )
 }
@@ -34,4 +44,15 @@ Simulation functions
 \details{
 If the total number of combinations is smaller than \code{mxcb} then the
 total number of combinations is used.
+}
+\section{Functions}{
+\itemize{
+\item \code{simu_ndistr}: effect of the number of samples used to build the distribution.
+}}
+
+\examples{
+\dontrun{
+simu_nbio("lda")
+simu_ndistr("lda")
+}
 }

@@ -16,6 +16,7 @@
 #' * `ndistr + nsample` cannot exceed 30 with data in `df_all`.
 #'
 #' @export
+#' @examples
 #' df_dat <- get_data_ready()
 #' find_origin("nb", col_ids = 3:4, df_dat = df_dat)
 

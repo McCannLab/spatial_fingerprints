@@ -5,6 +5,7 @@
 #' @param mxcb maximum number of biotracers combinations (see details).
 #' @param nsample number of samples (individuals) to be tested (per region).
 #' @param ndistr number of individuals used to generate distributions (per region).
+#' @param nbio number of biotracers to be used.
 #' @param noise noise to be added.
 #'
 #' @details
@@ -12,27 +13,71 @@
 #' total number of combinations is used.
 #'
 #' @export
-#' @example
+#' @examples
+#' \dontrun{
 #' simu_nbio("lda")
-
+#' simu_ndistr("lda")
+#' }
 
 simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
   nsample = 10, ndistr = 20, noise = 0) {
 
-  df_dat <- get_data_ready()
   method <- match.arg(method)
+  df_dat <- get_data_ready()
+  out <- list()
   arg <- list(method = method, nsample = nsample, ndistr = ndistr,
       noise = noise, df_dat = df_dat)
+
   sq_nbio <- seq_len(17)
-  out <- list()
   for (j in sq_nbio) {
       cat_line(cli::symbol$star, " nbio = ", j)
       # average over nrep replicates
       out[[j]] <- myreplic_combn(find_origin, arg, j, nrep = nrep, mxcb = mxcb,
           mxbio = 17, ngeo = 3)
   }
+
   out
 }
+
+
+#' @describeIn simu_nbio effect of the number of samples used to build the distribution.
+#' @export
+simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
+  nbio = 5, nsample = 1, noise = 0) {
+
+  method <- match.arg(method)
+  df_dat <- get_data_ready()
+  out <- list()
+
+  sq_distr <- 5:25
+  for (j in sq_distr) {
+    cat_line(cli::symbol$star, " ndistr = ", j)
+    arg <- list(method = method, df_dat = df_dat, nsample = nsample, ndistr = j, noise = noise)
+    out[[j]] <- myreplic_combn(find_origin, arg, nrep = nrep, nbio, mxcb = mxcb,
+        mxbio = 17, ngeo = 3)
+  }
+
+  out
+}
+
+
+# simu_nsample <- function(nrep = 500, mxcb = 700, nbio = 3, ndistr, noise) {
+#   out <- list(ksi = list(), lda = list())
+#   sq_sample <- 1:10
+#   for (j in sq_sample) {
+#     cat("--------------\nnsample = ", j, "\n")
+#     arg <- list(nsample = j, ndistr = ndistr, noise = noise)
+#     out$ksi[[j]] <- myreplic_combn(scr_ks_ind, arg, nbio,
+#         nrep = nrep, mxcb = mxcb, mxbio = 17, ngeo = 3)
+#     out$lda[[j]] <- myreplic_combn(scr_lda, arg, nbio,
+#         nrep = nrep, mxcb = mxcb, mxbio = 17, ngeo = 3)
+#   }
+#   out$nsample <- sq_sample
+#   saveRDS(out, file = name_file("res_sample", "1-10", ndistr, noise,
+#     nrep, mxcb))
+#   out
+# }
+
 
 
 
@@ -41,6 +86,7 @@ simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
 
 # helpers
 
+# replicate for a given combination
 myreplic_combn <- function(FUN, arg, nbio, mxbio = 17, nrep = 1000, ngeo = 3,
   mxcb = 200) {
   tmp <- get_replic(mxbio, nbio, mxcb)

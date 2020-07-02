@@ -66,3 +66,7 @@ Core functions to asses overall performance of LDA, NB and ML.
 \item \code{scr_ml}: core function for one hidden layer perceptron (ML) classifier.
 }}
 
+\examples{
+df_dat <- get_data_ready()
+find_origin("nb", col_ids = 3:4, df_dat = df_dat)
+}
