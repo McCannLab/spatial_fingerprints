@@ -7,6 +7,7 @@
 #' @param ndistr number of individuals used to generate distributions (per region).
 #' @param nbio number of biotracers to be used.
 #' @param noise noise to be added.
+#' @param pca a logical. See [get_data_ready()].
 #'
 #' @details
 #' If the total number of combinations is smaller than `mxcb` then the
@@ -17,14 +18,14 @@
 #' \dontrun{
 #' simu_nbio("lda")
 #' simu_ndistr("lda")
-#' simu_nsample()  
+#' simu_nsample()
 #' }
 
 simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
-  nsample = 10, ndistr = 20, noise = 0) {
+  nsample = 10, ndistr = 20, noise = 0, pca = FALSE) {
 
   method <- match.arg(method)
-  df_dat <- get_data_ready()
+  df_dat <- get_data_ready(pca = pca)
   out <- list()
   arg <- list(method = method, nsample = nsample, ndistr = ndistr,
       noise = noise, df_dat = df_dat)
@@ -40,14 +41,37 @@ simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
   out
 }
 
+#' @describeIn simu_nbio same as [simu_nbio()] but use pca and keep the axes ordered.
+#' @export
+simu_nbio_order <- function(method = c("lda", "nb", "ml"), nrep = 100,
+  nsample = 10, ndistr = 20, noise = 0) {
+
+  method <- match.arg(method)
+  df_dat <- get_data_ready(pca = TRUE)
+  out <- list()
+  arg <- list(method = method, nsample = nsample, ndistr = ndistr,
+      noise = noise, df_dat = df_dat)
+
+  sq_nbio <- seq_len(17)
+  for (j in sq_nbio) {
+      cat_line(cli::symbol$star, " nbio = ", j)
+      arg <- list(method = method, df_dat = df_dat, nsample = nsample,
+          ndistr = ndistr, col_ids = seq_len(j) + 2, noise = noise)
+      out[[j]] <- replicate(nrep, do.call(find_origin, arg))
+  }
+
+  out
+}
+
+
 
 #' @describeIn simu_nbio effect of the number of samples used to build the distribution.
 #' @export
 simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
-  nbio = 5, nsample = 1, noise = 0) {
+  nbio = 5, nsample = 1, noise = 0, pca = FALSE) {
 
   method <- match.arg(method)
-  df_dat <- get_data_ready()
+  df_dat <- get_data_ready(pca = pca)
   out <- list()
 
   sq_distr <- 5:25
@@ -62,10 +86,10 @@ simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
 }
 
 #' @describeIn simu_nbio effect of the number of samples used for inference.
-simu_nsample <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio = 5, ndistr = 20, noise = 0) {
+simu_nsample <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio = 5, ndistr = 20, noise = 0, pca = FALSE) {
 
   method <- match.arg(method)
-  df_dat <- get_data_ready()
+  df_dat <- get_data_ready(pca = pca)
   out <- list()
 
   sq_sample <- 1:10
@@ -76,13 +100,28 @@ simu_nsample <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nb
     out[[j]] <- myreplic_combn(find_origin, arg, nbio, nrep = nrep, mxcb = mxcb,
         mxbio = 17, ngeo = 3)
   }
-  out$nsample <- sq_sample
 
   out
 }
 
+#' @describeIn simu_nbio effect of the number of samples used for inference.
+simu_noise <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio = 5, ndistr = 20, nsample = 5, pca = FALSE) {
 
+  method <- match.arg(method)
+  df_dat <- get_data_ready(pca = pca)
+  out <- list()
 
+  sq_noise <- 10^seq(-4, 0, .25)
+  for (j in seq_along(sq_noise)) {
+    cat_line(cli::symbol$star, " noise = ", sq_noise[j])
+    arg <- list(method = method, df_dat = df_dat, nsample = nsample,
+        ndistr = ndistr, noise = sq_noise[j])
+    out[[j]] <- myreplic_combn(find_origin, arg, nbio, nrep = nrep, mxcb = mxcb,
+        mxbio = 17, ngeo = 3)
+  }
+
+  out
+}
 
 
 

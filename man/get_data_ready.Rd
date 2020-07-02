@@ -4,10 +4,12 @@
 \alias{get_data_ready}
 \title{Get data formatted}
 \usage{
-get_data_ready(scale = TRUE)
+get_data_ready(scale = TRUE, pca = FALSE)
 }
 \arguments{
 \item{scale}{a logical. Should data be scaled?}
+
+\item{pca}{a logical. Should column be transformed and order via a PCA. Note that in this case, data are scaled.}
 }
 \description{
 Get data formatted

@@ -24,7 +24,8 @@ jobs:
           sudo apt-get install -y libgdal-dev r-cran-ncdf4
       - name: Query dependencies
         run: |
-          install.packages('remotes')
+          install.packages(c('remotes', 'tinytex'))
+          tinytex::install_tinytex()
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
         shell: Rscript {0}
       - name: Cache R packages

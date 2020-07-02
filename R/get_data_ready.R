@@ -1,10 +1,11 @@
 #' Get data formatted
 #'
 #' @param scale a logical. Should data be scaled?
+#' @param pca a logical. Should column be transformed and order via a PCA. Note that in this case, data are scaled. 
 #'
 #' @export
 
-get_data_ready <- function(scale = TRUE) {
+get_data_ready <- function(scale = TRUE, pca = FALSE) {
   df_dat <- spatialfingerprints::df_all
   ## storage not needed as id is explicit
   # df_dat$Storage <- c("Lif", "Frozen")[2 - grepl("L$", df_dat$id)]
@@ -15,9 +16,14 @@ get_data_ready <- function(scale = TRUE) {
   ## keep only frozen
   # df_dat <- df_dat[df_dat$Storage == "Frozen", ]
   df_dat <- df_dat[!grepl("L$", df_dat$id), ]
-  # Scale
-  if (scale)
-    df_dat[, -1] <- apply(df_dat[, -1], 2, scale)
+  #
+  if (pca) {
+    df_dat[, -1] <- prcomp(df_dat[, -1], center = TRUE, scale. = TRUE)$x
+  } else {
+    # Scale
+    if (scale)
+      df_dat[, -1] <- apply(df_dat[, -1], 2, scale)
+  }
   #
   df_dat <- data.frame(
         region = keepLetters(df_dat$id, 1:2), df_dat,

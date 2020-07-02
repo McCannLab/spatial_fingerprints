@@ -4,6 +4,7 @@
 \alias{simu_nbio}
 \alias{simu_ndistr}
 \alias{simu_nsample}
+\alias{simu_noise}
 \title{Simulation functions}
 \usage{
 simu_nbio(
@@ -12,7 +13,8 @@ simu_nbio(
   mxcb = 10,
   nsample = 10,
   ndistr = 20,
-  noise = 0
+  noise = 0,
+  pca = FALSE
 )
 
 simu_ndistr(
@@ -21,7 +23,8 @@ simu_ndistr(
   mxcb = 20,
   nbio = 5,
   nsample = 1,
-  noise = 0
+  noise = 0,
+  pca = FALSE
 )
 
 simu_nsample(
@@ -30,7 +33,18 @@ simu_nsample(
   mxcb = 20,
   nbio = 5,
   ndistr = 20,
-  noise = 0
+  noise = 0,
+  pca = FALSE
+)
+
+simu_noise(
+  method = c("lda", "nb", "ml"),
+  nrep = 20,
+  mxcb = 20,
+  nbio = 5,
+  ndistr = 20,
+  nsample = 5,
+  pca = FALSE
 )
 }
 \arguments{
@@ -46,6 +60,8 @@ simu_nsample(
 
 \item{noise}{noise to be added.}
 
+\item{pca}{a logical. See \code{\link[=get_data_ready]{get_data_ready()}}.}
+
 \item{nbio}{number of biotracers to be used.}
 }
 \description{
@@ -60,12 +76,14 @@ total number of combinations is used.
 \item \code{simu_ndistr}: effect of the number of samples used to build the distribution.
 
 \item \code{simu_nsample}: effect of the number of samples used for inference.
+
+\item \code{simu_noise}: effect of the number of samples used for inference.
 }}
 
 \examples{
 \dontrun{
 simu_nbio("lda")
 simu_ndistr("lda")
-simu_nsample()  
+simu_nsample()
 }
 }
