@@ -17,6 +17,7 @@
 #' \dontrun{
 #' simu_nbio("lda")
 #' simu_ndistr("lda")
+#' simu_nsample()  
 #' }
 
 simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
@@ -60,23 +61,25 @@ simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
   out
 }
 
+#' @describeIn simu_nbio effect of the number of samples used for inference.
+simu_nsample <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio = 5, ndistr = 20, noise = 0) {
 
-# simu_nsample <- function(nrep = 500, mxcb = 700, nbio = 3, ndistr, noise) {
-#   out <- list(ksi = list(), lda = list())
-#   sq_sample <- 1:10
-#   for (j in sq_sample) {
-#     cat("--------------\nnsample = ", j, "\n")
-#     arg <- list(nsample = j, ndistr = ndistr, noise = noise)
-#     out$ksi[[j]] <- myreplic_combn(scr_ks_ind, arg, nbio,
-#         nrep = nrep, mxcb = mxcb, mxbio = 17, ngeo = 3)
-#     out$lda[[j]] <- myreplic_combn(scr_lda, arg, nbio,
-#         nrep = nrep, mxcb = mxcb, mxbio = 17, ngeo = 3)
-#   }
-#   out$nsample <- sq_sample
-#   saveRDS(out, file = name_file("res_sample", "1-10", ndistr, noise,
-#     nrep, mxcb))
-#   out
-# }
+  method <- match.arg(method)
+  df_dat <- get_data_ready()
+  out <- list()
+
+  sq_sample <- 1:10
+  for (j in sq_sample) {
+    cat_line(cli::symbol$star, " nsample = ", j)
+    arg <- list(method = method, df_dat = df_dat, nsample = j, ndistr = ndistr,
+        noise = noise)
+    out[[j]] <- myreplic_combn(find_origin, arg, nbio, nrep = nrep, mxcb = mxcb,
+        mxbio = 17, ngeo = 3)
+  }
+  out$nsample <- sq_sample
+
+  out
+}
 
 
 

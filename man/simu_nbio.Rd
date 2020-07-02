@@ -3,6 +3,7 @@
 \name{simu_nbio}
 \alias{simu_nbio}
 \alias{simu_ndistr}
+\alias{simu_nsample}
 \title{Simulation functions}
 \usage{
 simu_nbio(
@@ -20,6 +21,15 @@ simu_ndistr(
   mxcb = 20,
   nbio = 5,
   nsample = 1,
+  noise = 0
+)
+
+simu_nsample(
+  method = c("lda", "nb", "ml"),
+  nrep = 20,
+  mxcb = 20,
+  nbio = 5,
+  ndistr = 20,
   noise = 0
 )
 }
@@ -48,11 +58,14 @@ total number of combinations is used.
 \section{Functions}{
 \itemize{
 \item \code{simu_ndistr}: effect of the number of samples used to build the distribution.
+
+\item \code{simu_nsample}: effect of the number of samples used for inference.
 }}
 
 \examples{
 \dontrun{
 simu_nbio("lda")
 simu_ndistr("lda")
+simu_nsample()  
 }
 }
