@@ -1,6 +1,6 @@
 #' Get data formatted
 #'
-#' @param scale a logical. Should data se scaled?
+#' @param scale a logical. Should data be scaled?
 #'
 #' @export
 

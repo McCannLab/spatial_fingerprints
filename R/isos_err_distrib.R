@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @return
-#' A vector of size \code{sample_size}
+#' A vector of size `sample_size`
 #'
 #' @examples
 #' isos_err_distrib(1:10, rep(2,10), 100)

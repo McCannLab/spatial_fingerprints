@@ -6,11 +6,11 @@
 #' @param ls_values List of values to be sampled.
 #' @param sample_size size of the samples to be drawn.
 #' @param sample values of a sample.
-#' @param ls_density a list of object of class \code{\link[stats]{density}}.
-#' @param dens1 an integer that identities the first distribution to be mixed (in \code{ls_density}).
-#' @param dens2 an integer that identities the second distribution to be mixed (in \code{ls_density}).
+#' @param ls_density a list of object of class [stats::density()].
+#' @param dens1 an integer that identities the first distribution to be mixed (in `ls_density`).
+#' @param dens2 an integer that identities the second distribution to be mixed (in `ls_density`).
 #' @param perc a vector of numeric indicating the percentage of dens1 included in the sample (assuming the remaining is made of dens2).
-#' @param density an object of class \code{\link[stats]{density}}.
+#' @param density an object of class [stats::density()].
 #' @param nrep an integer indicating the number of repetition (see `details` section).
 #'
 #' @details
@@ -62,7 +62,7 @@ isos_simulations_mixture2 <- function(ls_values, sample_size, ls_density, dens1,
             smpl <- sample(ls_values[[dens1]], sample_size, replace = TRUE)
             nbr <- floor(perc[i]/100 * lg2)
             if (nbr)
-                smpl[sample(1:lg2, nbr)] <- sample(ls_values[[dens2]], nbr, replace = TRUE)
+                smpl[sample(seq_len(lg2), nbr)] <- sample(ls_values[[dens2]], nbr, replace = TRUE)
             out[i, ] <- out[i, ] + isos_sample(sample(smpl, sample_size, replace = TRUE),
                 ls_density)
         }
@@ -88,16 +88,19 @@ isos_sample <- function(sample, ls_density) {
 }
 
 
-#' @describeIn isos_simulations Compute the likelihood associated with one sample.
+#' @describeIn isos_simulations Computes the likelihood associated with one sample.
 #' @return A likelihood value.
 isos_likelihood <- function(sample, density) {
     # check
     stopifnot(class(density) == "density")
-    #
+    # density for samples
+    # did not end up using approx() cause it returns NAs when while with getLik
+    # it returns the values for extremes, which should be very low.
+    # ls_tmp <- lapply(sample, function(x) approx(dens$x, dens$y, xout = x))
     ls_tmp <- lapply(sample, FUN = get_loglik, density = density)
+    # get LL for the entire sample
     sum(-log(unlist(ls_tmp)))
 }
-
 
 get_loglik <- function(x, density) {
     val <- (x - density$x)^2

@@ -7,7 +7,7 @@
 get_data_ready(scale = TRUE)
 }
 \arguments{
-\item{scale}{a logical. Should data se scaled?}
+\item{scale}{a logical. Should data be scaled?}
 }
 \description{
 Get data formatted

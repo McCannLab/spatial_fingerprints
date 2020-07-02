@@ -10,7 +10,8 @@
 #' @importFrom mvtnorm dmvnorm rmvnorm
 #' @importFrom orthomap orthomap
 #' @importFrom progress progress_bar
-#' @importFrom stats as.formula dchisq density dnorm integrate predict rnorm sd
+#' @importFrom stats approx as.formula dchisq density dnorm integrate predict
+#' @importFrom stats rnorm sd
 #' @importFrom sf st_as_sf st_geometry
 #' @importFrom utils combn
 
@@ -33,4 +34,26 @@ msgSuccess_fig <- function(n, dir = "output")
 name_file <- function(pref = "res", nsample, ndistr, noise, nrep, mxcb) {
   paste0(pref, "_nsa", nsample, "_ndi", ndistr, "_noi", noise,
     "_nre", nrep, "_mxc", mxcb, ".rds")
+}
+
+
+
+##
+# add noise
+add_noise <- function(train, mean = 0, sd = 1) {
+  apply(train, 2, function(x) x + rnorm(length(x), mean, sd))
+}
+
+add_noise_v <- function(train, mean = 0, sd = 1) {
+  train + rnorm(length(train), mean, sd)
+}
+
+
+# convert a matrix of -log likelihood into a proba for each state
+# NB: FOR EACH ELEMENT row i column j
+# $exp(-m_{i,j})/\sum_j{exp(-m_{i,j})}$
+toprob <- function(x) {
+  tmp <- exp(-x)
+  # NB: call to t() required, otherwise results are in the wrong order
+  t(apply(tmp, 1, function(x) x/sum(x)))
 }

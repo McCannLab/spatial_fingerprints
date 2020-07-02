@@ -2,10 +2,14 @@
 % Please edit documentation in R/scr_fig_concept.R
 \name{script_fig_concept}
 \alias{script_fig_concept}
-\title{Figure 2}
+\title{Figure 1}
 \usage{
 script_fig_concept()
 }
 \description{
-Code to reproduce figure 1.
+Code to reproduce figure 1
+}
+\details{
+Note that the Salmon silhouette was added with Inkscape and is available at
+\url{http://phylopic.org/image/3c098bb8-4158-4777-b567-80e48049409c/}.
 }

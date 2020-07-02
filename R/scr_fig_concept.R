@@ -1,10 +1,12 @@
-#' Figure 2
+#' Figure 1
 #'
-#' Code to reproduce figure 1.
+#' Code to reproduce figure 1
+#'
+#' @details
+#' Note that the Salmon silhouette was added with Inkscape and is available at
+#' <http://phylopic.org/image/3c098bb8-4158-4777-b567-80e48049409c/>.
 #'
 #' @export
-
-# add http://phylopic.org/image/3c098bb8-4158-4777-b567-80e48049409c/
 
 script_fig_concept <- function() {
 
@@ -103,3 +105,36 @@ other_version <- function() {
   dev.off()
 }
 
+# Matrices for illustration purposes
+fig_part3 <- function() {
+
+  mat1 <- apply(replicate(2000, find_origin("nb", ndistr = 20, nsample = 2,
+    col_ids =  13)), c(1, 2), mean)
+  mat2 <- apply(replicate(2000, find_origin("nb", ndistr = 20, nsample = 2,
+    col_ids =  7)), c(1, 2), mean)
+  mat3 <- apply(replicate(2000, find_origin("nb", ndistr = 22, nsample = 6,
+    col_ids =  c(13, 7))), c(1, 2), mean)
+  pal <- colorRampPalette(c("white", "black"))(100)
+  png("output/fig1c.png", width = 3, height = 5, units = "in", res = 600)
+  par(mfrow = c(3, 1), mar = c(2, 1, 1, 1), bg = "transparent")
+  graphicsutils::image2(scaleWithin(mat1, 100, 0, 1), color_scale = pal)
+  mat_text(format(mat1, digits = 2))
+  graphicsutils::image2(scaleWithin(mat2, 100, 0, 1), color_scale = pal)
+  mat_text(format(mat2, digits = 2))
+  graphicsutils::image2(scaleWithin(mat3, 100, 0, 1), color_scale = pal)
+  mat_text(format(mat3, digits = 2))
+  dev.off()
+  c(mean(diag(mat1)), mean(diag(mat2)), mean(diag(mat3)))
+}
+
+
+mat_text <- function(mat, ...) {
+  seqx <- seq(0, 1, length.out = NROW(mat))
+  seqy <- seq(0, 1, length.out = NCOL(mat))
+  for (i in seq_len(NROW(mat))) {
+    for (j in seq_len(NCOL(mat))) {
+      col <- ifelse(as.numeric(mat[i, j]) < .5, "black", "white")
+      text(seqx[i], 1 - seqy[j], labels = mat[i, j], col = col, cex = 1.1, ...)
+    }
+  }
+}

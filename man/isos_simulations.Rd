@@ -28,7 +28,7 @@ isos_likelihood(sample, density)
 
 \item{sample_size}{size of the samples to be drawn.}
 
-\item{ls_density}{a list of object of class \code{\link[stats]{density}}.}
+\item{ls_density}{a list of object of class \code{\link[stats:density]{stats::density()}}.}
 
 \item{nrep}{an integer indicating the number of repetition (see \code{details} section).}
 
@@ -40,7 +40,7 @@ isos_likelihood(sample, density)
 
 \item{sample}{values of a sample.}
 
-\item{density}{an object of class \code{\link[stats]{density}}.}
+\item{density}{an object of class \code{\link[stats:density]{stats::density()}}.}
 }
 \value{
 A matrix
@@ -68,6 +68,6 @@ all densities are returned and the corresponding vector is ordered following
 
 \item \code{isos_sample}: Analyse for one sample.
 
-\item \code{isos_likelihood}: Compute the likelihood associated with one sample.
+\item \code{isos_likelihood}: Computes the likelihood associated with one sample.
 }}
 

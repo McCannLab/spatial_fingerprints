@@ -1,4 +1,4 @@
 ^LICENSE$
 ^tmp
 ^output
-^\.github/workflows/R-CMD-check\.yaml$
+^\.github/
