@@ -1,3 +1,4 @@
+#' @importFrom cli cat_line
 #' @importFrom graphics abline axis box image layout lines par plot
 #' @importFrom graphics points text title
 #' @importFrom graphicsutils plot0 gpuPalette
@@ -34,6 +35,15 @@ msgSuccess_fig <- function(n, dir = "output")
 name_file <- function(pref = "res", nsample, ndistr, noise, nrep, mxcb) {
   paste0(pref, "_nsa", nsample, "_ndi", ndistr, "_noi", noise,
     "_nre", nrep, "_mxc", mxcb, ".rds")
+}
+
+
+# sampling combination of biotracer helper
+get_replic <- function(n, p, mx = 200) {
+  tmp <- choose(n, p)
+  if (mx <= tmp) {
+    combn(n, p)[, sample(tmp, mx), drop = FALSE]
+  } else combn(n, p)
 }
 
 

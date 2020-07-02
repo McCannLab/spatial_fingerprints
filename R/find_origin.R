@@ -1,6 +1,6 @@
 #' Core functions to asses overall performance of LDA, NB and ML.
 #'
-#' @param method statistical approach used, either "lda", "nb" or "ml".
+#' @param method statistical approach, either "lda", "nb" or "ml".
 #' @param df_dat biotracer data sets. Note that by default, it loads `df_all()`
 #' (see [get_data_ready()]).
 #' @param ndistr number of sample used to build baseline biotracer distributions.
@@ -10,28 +10,28 @@
 #' @param toprob should the output be a probability.
 #'
 #' @details
-#' `ndistr + nsample` cannot exceed 30 with data in `df_all`.
+#' * "lda" : linear discriminant analysis,
+#' * "nb" : naive bayesian,
+#' * "ml": machine learning,
+#' * `ndistr + nsample` cannot exceed 30 with data in `df_all`.
 #'
 #' @export
-# find_origin("nb", col_ids = 3:4)
+#' df_dat <- get_data_ready()
+#' find_origin("nb", col_ids = 3:4, df_dat = df_dat)
 
-find_origin <- function(method = c("lda", "nb", "ml"), ndistr = 20,
-  nsample = 10, noise = 0, col_ids = 3:19, df_dat = NULL, toprob = TRUE) {
+find_origin <- function(method = c("lda", "nb", "ml"), df_dat, ndistr = 20,
+  nsample = 10, noise = 0, col_ids = 3:19, toprob = TRUE) {
 
     method <- match.arg(method)
-    if (is.null(df_dat))
-      df_dat <- get_data_ready()
-
     ls_val <- split(seq_len(nrow(df_dat)), df_dat$region)
     ngeo <- length(ls_val)
-
 
     out <- switch(method,
       lda = scr_lda(df_dat, ndistr, nsample, noise, col_ids),
       nb = scr_nb(df_dat, ndistr, nsample, noise, col_ids),
       ml = scr_ml(df_dat, ndistr, nsample, noise, col_ids)
     )
-    print(out)
+
     if (toprob) toprob(out) else out
 }
 
@@ -96,7 +96,6 @@ scr_nb <- function(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19) 
       for (l in seq_len(ngeo)) {
         smpl <- tmp[id[[l]][-idd], k]
         ## LL for all samples and for NB LL is added for all biotracers
-        print(isos_likelihood(smpl, train))
         out[l, j] <- out[l, j] + isos_likelihood(smpl, train)
       }
     }

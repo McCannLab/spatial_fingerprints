@@ -9,11 +9,11 @@
 \usage{
 find_origin(
   method = c("lda", "nb", "ml"),
+  df_dat,
   ndistr = 20,
   nsample = 10,
   noise = 0,
   col_ids = 3:19,
-  df_dat = NULL,
   toprob = TRUE
 )
 
@@ -31,7 +31,10 @@ scr_ml(
 )
 }
 \arguments{
-\item{method}{statistical approach used, either "lda", "nb" or "ml".}
+\item{method}{statistical approach, either "lda", "nb" or "ml".}
+
+\item{df_dat}{biotracer data sets. Note that by default, it loads \code{df_all()}
+(see \code{\link[=get_data_ready]{get_data_ready()}}).}
 
 \item{ndistr}{number of sample used to build baseline biotracer distributions.}
 
@@ -41,16 +44,18 @@ scr_ml(
 
 \item{col_ids}{ids (name or integer) of columns to be used (select biotracers).}
 
-\item{df_dat}{biotracer data sets. Note that by default, it loads \code{df_all()}
-(see \code{\link[=get_data_ready]{get_data_ready()}}).}
-
 \item{toprob}{should the output be a probability.}
 }
 \description{
 Core functions to asses overall performance of LDA, NB and ML.
 }
 \details{
-\code{ndistr + nsample} cannot exceed 30 with data in \code{df_all}.
+\itemize{
+\item "lda" : linear discriminant analysis,
+\item "nb" : naive bayesian,
+\item "ml": machine learning,
+\item \code{ndistr + nsample} cannot exceed 30 with data in \code{df_all}.
+}
 }
 \section{Functions}{
 \itemize{
