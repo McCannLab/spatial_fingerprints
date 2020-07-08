@@ -1,11 +1,14 @@
-#' Get data formatted
+#' Format data
 #'
+#' This is the function that has been used to format the raw data `df_all`.
+#'
+#' @param center a logical. Should data be centered?
 #' @param scale a logical. Should data be scaled?
-#' @param pca a logical. Should column be transformed and order via a PCA. Note that in this case, data are scaled. 
+#' @param pca a logical. Should column be transformed and order via a PCA. Note that in this case, data are scaled.
 #'
 #' @export
 
-get_data_ready <- function(scale = TRUE, pca = FALSE) {
+get_data_ready <- function(center = TRUE, scale = TRUE, pca = FALSE) {
   df_dat <- spatialfingerprints::df_all
   ## storage not needed as id is explicit
   # df_dat$Storage <- c("Lif", "Frozen")[2 - grepl("L$", df_dat$id)]
@@ -18,11 +21,10 @@ get_data_ready <- function(scale = TRUE, pca = FALSE) {
   df_dat <- df_dat[!grepl("L$", df_dat$id), ]
   #
   if (pca) {
-    df_dat[, -1] <- prcomp(df_dat[, -1], center = TRUE, scale. = TRUE)$x
+    df_dat[, -1] <- prcomp(df_dat[, -1], center = center, scale. = scale)$x
   } else {
     # Scale
-    if (scale)
-      df_dat[, -1] <- apply(df_dat[, -1], 2, scale)
+    df_dat[, -1] <- apply(df_dat[, -1], 2, scale, center, scale)
   }
   #
   df_dat <- data.frame(

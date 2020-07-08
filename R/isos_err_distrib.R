@@ -6,7 +6,6 @@
 #' @param vc_errors List of error values to be sampled.
 #' @param sample_size size of the samples to be drawn.
 #'
-#' @importFrom stats rnorm
 #' @export
 #'
 #' @return

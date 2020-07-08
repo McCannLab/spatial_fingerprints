@@ -2,15 +2,17 @@
 % Please edit documentation in R/get_data_ready.R
 \name{get_data_ready}
 \alias{get_data_ready}
-\title{Get data formatted}
+\title{Format data}
 \usage{
-get_data_ready(scale = TRUE, pca = FALSE)
+get_data_ready(center = TRUE, scale = TRUE, pca = FALSE)
 }
 \arguments{
+\item{center}{a logical. Should data be centered?}
+
 \item{scale}{a logical. Should data be scaled?}
 
 \item{pca}{a logical. Should column be transformed and order via a PCA. Note that in this case, data are scaled.}
 }
 \description{
-Get data formatted
+This is the function that has been used to format the raw data \code{df_all}.
 }

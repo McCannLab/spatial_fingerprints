@@ -1,6 +1,7 @@
 # Project specific
 inst/img/
 output/
+res/
 
 # History files
 .Rhistory

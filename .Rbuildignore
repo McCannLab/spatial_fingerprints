@@ -1,4 +1,7 @@
 ^LICENSE$
 ^tmp
 ^output
+^res
 ^\.github/
+^myjob.sh
+^launch.R

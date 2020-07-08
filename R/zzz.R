@@ -1,4 +1,4 @@
-#' @importFrom cli cat_line
+#' @importFrom cli cat_line style_underline
 #' @importFrom graphics abline axis box image layout lines par plot
 #' @importFrom graphics points text title
 #' @importFrom graphicsutils plot0 gpuPalette
@@ -20,11 +20,11 @@ NULL
 
 # HELPERS
 
-output_dir <- function(dir = "output") {
+output_dir <- function(dir = "output", recursive = TRUE) {
   if (!dir.exists(dir)) {
-    dir.create(dir)
-    msgInfo("Folder", dir, "created!")
-  }
+    dir.create(dir, recursive = recursive)
+    msgInfo("Folder", style_underline(dir), "created!")
+  } else msgInfo("Folder", style_underline(dir), "has already been created!")
   invisible(dir)
 }
 
@@ -67,3 +67,17 @@ toprob <- function(x) {
   # NB: call to t() required, otherwise results are in the wrong order
   t(apply(tmp, 1, function(x) x/sum(x)))
 }
+
+
+julia_call <- function(pca, method, n_bio, n_distr, n_sample, mxcb, n_rep, inp, out = "output/res_ml/") {
+  output_dir(out)
+  inp <- ifelse(pca,
+      "inst/exdata/data_f_pca.csv",
+      "inst/exdata/data_f_cs.csv"
+    )
+  call <- paste('julia -p 1 scr/main.jl', pca * 1, n_bio, n_distr, n_sample, mxcb, n_rep, inp, out)
+  msgInfo('Now computing via julia scripts')
+  system(call)
+  invisible(call)
+}
+

@@ -8,6 +8,7 @@
 #' @param nbio number of biotracers to be used.
 #' @param noise noise to be added.
 #' @param pca a logical. See [get_data_ready()].
+#' @param ... further arguments for "ml".
 #'
 #' @details
 #' If the total number of combinations is smaller than `mxcb` then the
@@ -22,23 +23,28 @@
 #' }
 
 simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
-  nsample = 10, ndistr = 20, noise = 0, pca = FALSE) {
+  nsample = 10, ndistr = 20, noise = 0, pca = FALSE, mx_bio = 17,...) {
 
   method <- match.arg(method)
-  df_dat <- get_data_ready(pca = pca)
-  out <- list()
-  arg <- list(method = method, nsample = nsample, ndistr = ndistr,
-      noise = noise, df_dat = df_dat)
 
-  sq_nbio <- seq_len(17)
-  for (j in sq_nbio) {
-      cat_line(cli::symbol$star, " nbio = ", j)
-      # average over nrep replicates
-      out[[j]] <- myreplic_combn(find_origin, arg, j, nrep = nrep, mxcb = mxcb,
-          mxbio = 17, ngeo = 3)
+  if (method == "ml") {
+    julia_call(0, pca, ...)
+  } else {
+    df_dat <- get_data_ready(pca = pca)
+    out <- list()
+    arg <- list(method = method, nsample = nsample, ndistr = ndistr,
+        noise = noise, df_dat = df_dat)
+
+    sq_nbio <- seq_len(mx_bio)
+    for (j in sq_nbio) {
+        cat_line(cli::symbol$star, " nbio = ", j)
+        # average over nrep replicates
+        out[[j]] <- myreplic_combn(find_origin, arg, j, nrep = nrep, mxcb = mxcb,
+            mxbio = 17, ngeo = 3)
+    }
+    return(out)
   }
 
-  out
 }
 
 #' @describeIn simu_nbio same as [simu_nbio()] but use pca and keep the axes ordered.
@@ -74,7 +80,7 @@ simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
   df_dat <- get_data_ready(pca = pca)
   out <- list()
 
-  sq_distr <- 5:25
+  sq_distr <- 4:26
   for (j in sq_distr) {
     cat_line(cli::symbol$star, " ndistr = ", j)
     arg <- list(method = method, df_dat = df_dat, nsample = nsample, ndistr = j, noise = noise)
@@ -132,17 +138,23 @@ simu_noise <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio
 myreplic_combn <- function(FUN, arg, nbio, mxbio = 17, nrep = 1000, ngeo = 3,
   mxcb = 200) {
   tmp <- get_replic(mxbio, nbio, mxcb)
-  out <- array(NA, c(ngeo, ngeo, ncol(tmp)))
+  out <- list(
+    mean = array(NA, c(ngeo, ngeo, ncol(tmp))),
+    sd = array(NA, c(ngeo, ngeo, ncol(tmp)))
+  )
   for (i in seqCol(tmp)) {
     arg$col_ids <- 2 + tmp[, i]
-    out[, ,i] <- myreplic(FUN, arg, nrep)
+    tmp2 <- myreplic(FUN, arg, nrep)
+    out$mean[, , i] <- tmp2$mean
+    out$sd[, , i] <- tmp2$sd
   }
   out
 }
 
 ## where replicated
 myreplic <- function(FUN, arg, nrep = 100) {
-  apply(replicate(nrep, do.call(FUN, arg)), c(1,2), mean)
+  tmp <- replicate(nrep, do.call(FUN, arg))
+  list(mean = apply(tmp, c(1, 2), mean), sd = apply(tmp, c(1, 2), sd))
 }
 
 get_res <- function(x) {

@@ -15,7 +15,9 @@ simu_nbio(
   nsample = 10,
   ndistr = 20,
   noise = 0,
-  pca = FALSE
+  pca = FALSE,
+  mx_bio = 17,
+  ...
 )
 
 simu_nbio_order(
@@ -70,6 +72,8 @@ simu_noise(
 \item{noise}{noise to be added.}
 
 \item{pca}{a logical. See \code{\link[=get_data_ready]{get_data_ready()}}.}
+
+\item{...}{further arguments for "ml".}
 
 \item{nbio}{number of biotracers to be used.}
 }
