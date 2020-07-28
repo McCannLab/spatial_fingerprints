@@ -1,6 +1,6 @@
 #' @importFrom cli cat_line style_underline
 #' @importFrom graphics abline axis box image layout lines par plot
-#' @importFrom graphics points text title
+#' @importFrom graphics points text title legend
 #' @importFrom graphicsutils plot0 gpuPalette
 #' @importFrom grDevices colorRampPalette dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess scaleWithin keepLetters
@@ -12,11 +12,13 @@
 #' @importFrom orthomap orthomap
 #' @importFrom progress progress_bar
 #' @importFrom stats approx as.formula dchisq density dnorm integrate prcomp
-#' @importFrom stats predict rnorm sd
+#' @importFrom stats aggregate predict rnorm sd
 #' @importFrom sf st_as_sf st_geometry
-#' @importFrom utils combn
+#' @importFrom utils combn write.csv
 
 NULL
+
+
 
 # HELPERS
 

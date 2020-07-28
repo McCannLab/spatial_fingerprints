@@ -9,6 +9,7 @@
 #' @param noise noise to be added.
 #' @param pca a logical. See [get_data_ready()].
 #' @param ... further arguments for "ml".
+#' @param mx_bio maximum biotracer number. '
 #'
 #' @details
 #' If the total number of combinations is smaller than `mxcb` then the
@@ -117,7 +118,7 @@ simu_noise <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio
   df_dat <- get_data_ready(pca = pca)
   out <- list()
 
-  sq_noise <- 10^seq(-4, 0, .25)
+  sq_noise <- 10^seq(-4, 1, .2)
   for (j in seq_along(sq_noise)) {
     cat_line(cli::symbol$star, " noise = ", sq_noise[j])
     arg <- list(method = method, df_dat = df_dat, nsample = nsample,

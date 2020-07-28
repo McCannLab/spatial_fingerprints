@@ -73,6 +73,8 @@ simu_noise(
 
 \item{pca}{a logical. See \code{\link[=get_data_ready]{get_data_ready()}}.}
 
+\item{mx_bio}{maximum biotracer number. '}
+
 \item{...}{further arguments for "ml".}
 
 \item{nbio}{number of biotracers to be used.}
