@@ -1,6 +1,6 @@
 #' @importFrom cli cat_line style_underline
 #' @importFrom graphics abline axis box image layout lines par plot
-#' @importFrom graphics points text title legend
+#' @importFrom graphics points text title legend boxplot
 #' @importFrom graphicsutils plot0 gpuPalette
 #' @importFrom grDevices colorRampPalette dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess scaleWithin keepLetters
