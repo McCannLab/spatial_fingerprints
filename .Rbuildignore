@@ -6,3 +6,5 @@
 ^myjob.sh
 ^job_ml_train.sh
 ^launch.R
+^launch2.R
+^launch4.R

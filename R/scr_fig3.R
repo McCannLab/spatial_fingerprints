@@ -1,5 +1,5 @@
 scr_fig3 <- function() {
-  
+
 get_res_bb <- function(file) {
   raw <- readRDS(file)
   lapply(raw, function(x) apply(x$mean, 3, function(x) mean(diag(x))))
@@ -69,3 +69,4 @@ addaxes()
 dev.off()
 
 }
+

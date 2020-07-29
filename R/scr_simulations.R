@@ -81,6 +81,7 @@ simu_ndistr <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20,
   df_dat <- get_data_ready(pca = pca)
   out <- list()
 
+  # WARNING THIS GENERATE 3 empty elements in the list
   sq_distr <- 4:26
   for (j in sq_distr) {
     cat_line(cli::symbol$star, " ndistr = ", j)
