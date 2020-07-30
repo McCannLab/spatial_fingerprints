@@ -36,10 +36,10 @@ pca_nb <- unlist(lapply(get_res_pca("output/res_f/nbio_pca_nb_01.rds"), function
 
 tmp <- readRDS('output/res_f/ml_nbio_pca.rds')
 res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
-ml_pca <- aggregate(prob~nbio, mean, data = res_ml)
+ml_pca <- aggregate(prob ~ nbio, mean, data = res_ml)
 tmp2 <- readRDS('output/res_f/res_ml_nbio.rds')
 res_ml2 <- tmp2[tmp2$id_reg_test == tmp2$id_reg_true, ]
-ml_reg <- aggregate(prob~nbio*id_comb, mean, data = res_ml2)
+ml_reg <- aggregate(prob ~ nbio*id_comb, mean, data = res_ml2)
 pca_ml <- split(ml_reg$prob, ml_reg$nbio)
 
 
@@ -51,6 +51,7 @@ boxplot(get_res_bb(files_lda[[1]]), col = "grey95", add = TRUE, pch = 19, border
 points(1:17, pca_lda, col = 1, pch = 19, cex = 1)
 lines(1:17, pca_lda, col = 1, lwd = .7)
 addaxes()
+addlet('a')
 
 
 plot(c(1, 17), c(.33, 1), type = "n", xlab = "Number of biotracers", ylab = "", axes = FALSE)
@@ -58,13 +59,14 @@ boxplot(get_res_bb(files_nb[[1]]), col = "grey95", add = TRUE, pch = 19, border 
 points(1:17, pca_nb, col = 1, pch = 19, cex = 1)
 lines(1:17, pca_nb, col = 1, lwd = .7)
 addaxes()
+addlet('b')
 
 plot(c(1, 17), c(.33, 1), type = "n",  xlab = "", ylab = "", axes = FALSE)
 boxplot(pca_ml, col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
 points(1:17, ml_pca[, 2], col = 1, pch = 19, cex = 1)
 lines(1:17, ml_pca[, 2], col = 1, lwd = .7)
 addaxes()
-
+addlet('c')
 
 dev.off()
 

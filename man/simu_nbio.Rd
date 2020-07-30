@@ -6,6 +6,7 @@
 \alias{simu_ndistr}
 \alias{simu_nsample}
 \alias{simu_noise}
+\alias{simu_all}
 \title{Simulation functions}
 \usage{
 simu_nbio(
@@ -57,6 +58,18 @@ simu_noise(
   nsample = 5,
   pca = FALSE
 )
+
+simu_all(
+  method = c("lda", "nb", "ml"),
+  nrep = 10000,
+  mxcb = 700,
+  nsample = 1,
+  ndistr = 20,
+  noise = 0,
+  pca = FALSE,
+  mx_bio = 17,
+  ...
+)
 }
 \arguments{
 \item{method}{statistical approach, either "lda", "nb" or "ml".}
@@ -95,6 +108,8 @@ total number of combinations is used.
 \item \code{simu_nsample}: effect of the number of samples used for inference.
 
 \item \code{simu_noise}: effect of the number of samples used for inference.
+
+\item \code{simu_all}: all combinaison for 1:3
 }}
 
 \examples{

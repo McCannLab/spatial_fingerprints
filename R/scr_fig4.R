@@ -7,17 +7,6 @@ get_res <- function(file) {
   lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
 }
 
-get_res_sd <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x$sd, c(1, 2), mean))
-}
-
-
-get_res_alt <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x, c(1, 2), mean))
-}
-
 addlet <- function(let) text(1, .98, let, cex = 1.2, font = 2)
 
 
@@ -30,12 +19,10 @@ addaxesN <- function() {
 
 
 
-
-files_lda <- sprintf("output/nb_lda_noise/noise_lda_%02d.rds",
-  c(1:3, 5, 10))
-files_nb <- sprintf("output/nb_lda_noise/noise_nb_%02d.rds",
-  c(1:3, 5, 10))
-
+idf <- c(1:3, 5, 10, 15)
+files_lda <- sprintf("output/nb_lda_noise/noise_lda_%02d.rds", idf)
+files_nb <- sprintf("output/nb_lda_noise/noise_nb_%02d.rds", idf)
+nf <- length(idf)
 #
 # tmp <- readRDS('output/res_f/res_ml_nbio.rds')
 # res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
@@ -51,8 +38,8 @@ sqn <- 1:26
 ## lda
 plot(c(1, 26), c(0.33, 1), type = "n", xlab = "", ylab = "Overall performance",
 axes = FALSE)
-pal <- colorRampPalette(c('grey10', 'grey70'))(5)
-for (i in 1:5) {
+pal <- colorRampPalette(c('grey5', 'grey75'))(nf)
+for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
   lines(sqn, val, pch = 19, col = pal[i], lwd = .7)
   points(sqn, val, pch = 19, col = pal[i], cex = .8)
@@ -62,15 +49,13 @@ addaxesN()
 
 # nb
 plot(range(sqn), c(0.33, 1), type = "n", xlab = "Noise", ylab = "", axes = FALSE)
-pal <- colorRampPalette(c('grey10', 'grey70'))(5)
-for (i in 1:5) {
+for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
   lines(sqn, val, pch = 19, col = pal[i], lwd = .7)
   points(sqn, val, pch = 19, col = pal[i], cex = .8)
 }
-addaxesN()
 addlet("b")
-
+addaxesN()
 # ml
 plot(range(sqn), c(0.33, 1), type = "n", xlab = "", ylab = "")
 addlet("c")
@@ -79,7 +64,7 @@ addlet("c")
 # addlet("f")
 
 #
-legend("bottomright", legend = c(1:3, 5, 10), col = pal, pch = 19, bty = "n")
+legend("topright", legend = idf, col = pal, pch = 19, bty = "n")
 
 dev.off()
 
@@ -91,6 +76,13 @@ dev.off()
 
 
 scr_figSX <- function() {
+
+  get_res <- function(file) {
+    raw <- readRDS(file)
+    # remove empty elements
+    raw <- Filter(Negate(is.null), raw)
+    lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
+  }
 
   addaxesD <- function() {
     sq <- seq(1, 23, 3)
@@ -105,11 +97,13 @@ scr_figSX <- function() {
 
 ## Very similar => fig SX
 
-files_lda <- sprintf("output/nb_lda_ndistr/ndistr_nb_%02d.rds",
-  c(1:3, 5, 10))
-files_nb <- sprintf("output/nb_lda_ndistr/ndistr_nb_%02d.rds",
-  c(1:3, 5, 10))
-#
+
+idf <- c(1:3, 5, 10, 15)
+files_lda <- sprintf("output/nb_lda_ndistr/ndistr_lda_%02d.rds", idf)
+files_nb <- sprintf("output/nb_lda_ndistr/ndistr_nb_%02d.rds", idf)
+nf <- length(idf)
+
+
 # tmp <- readRDS('output/res_f/res_ml_nbio.rds')
 # res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
 # ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data = res_ml)
@@ -126,8 +120,8 @@ sqd <- 1:23
 ## lda
 plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "Overall performance",
 axes = FALSE)
-pal <- colorRampPalette(c('grey10', 'grey70'))(5)
-for (i in 1:5) {
+pal <- colorRampPalette(c('grey10', 'grey70'))(nf)
+for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
   lines(sqd, val, pch = 19, col = pal[i], lwd = .7)
   points(sqd, val, pch = 19, col = pal[i], cex = .8)
@@ -137,8 +131,7 @@ addaxesD()
 
 # nb
 plot(range(sqd), c(0.33, 1), type = "n", xlab = "Noise", ylab = "", axes = FALSE)
-pal <- colorRampPalette(c('grey10', 'grey70'))(5)
-for (i in 1:5) {
+for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
   lines(sqd, val, pch = 19, col = pal[i], lwd = .7)
   points(sqd, val, pch = 19, col = pal[i], cex = .8)
@@ -149,7 +142,7 @@ addlet("b")
 # ml
 plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "")
 addlet("c")
-legend("bottomright", legend = c(1:3, 5, 10), col = pal, pch = 19, bty = "n")
+legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n")
 
 dev.off()
 

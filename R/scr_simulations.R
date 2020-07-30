@@ -132,6 +132,33 @@ simu_noise <- function(method = c("lda", "nb", "ml"), nrep = 20, mxcb = 20, nbio
 }
 
 
+# NB for 3 bio-tracers ==> choose(17, 3) = 680, so I set mxcb to 700
+#' @describeIn simu_nbio all combinaison for 1:3
+simu_all <- function(method = c("lda", "nb", "ml"), nrep = 1e4, mxcb = 700,
+  nsample = 1, ndistr = 20, noise = 0, pca = FALSE, mx_bio = 17,...) {
+
+  method <- match.arg(method)
+
+  if (method == "ml") {
+    julia_call(0, pca, ...)
+  } else {
+    df_dat <- get_data_ready(pca = pca)
+    out <- list()
+    arg <- list(method = method, nsample = nsample, ndistr = ndistr,
+        noise = noise, df_dat = df_dat)
+
+    sq_nbio <- 1:3
+    for (j in sq_nbio) {
+        cat_line(cli::symbol$star, " nbio = ", j)
+        # average over nrep replicates
+        out[[j]] <- myreplic_combn(find_origin, arg, j, nrep = nrep, mxcb = mxcb,
+            mxbio = 17, ngeo = 3)
+    }
+    return(out)
+  }
+
+}
+
 
 
 # helpers
