@@ -5,29 +5,20 @@ get_res <- function(file) {
   lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
 }
 
-get_res_sd <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x$sd, c(1, 2), mean))
-}
-
-
 get_res_alt <- function(file) {
   raw <- readRDS(file)
   lapply(raw, function(x) apply(x, c(1, 2), mean))
 }
 
-addlet <- function(let) text(1, .98, let, cex = 1.2, font =2)
+addlet <- function(let, x = 1, y = .98) text(x, y, let, cex = 1.2, font =2)
 
 
-files_lda <- sprintf("output/res_server_nb_lda/nbio_lda_%02d.rds",
-  c(1:3, 5, 10))
-files_nb <- sprintf("output/res_server_nb_lda/nbio_nb_%02d.rds",
-  c(1:3, 5, 10))
+sqs <- c(1:3, 5, 10)
+files_lda <- sprintf("output/res_server_nb_lda/nbio_lda_%02d.rds", sqs)
+files_nb <- sprintf("output/res_server_nb_lda/nbio_nb_%02d.rds", sqs)
 #
-tmp <- readRDS('output/res_f/res_ml_nbio.rds')
-res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
-ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data = res_ml)
-ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
+tmp <- readRDS('output/res_f/res_combn_ml_nbio.rds')
+ml_reg <- lapply(tmp, function(x) aggregate(cbind(can, ru, us) ~ nbio, mean, data = x))
 
 
 
@@ -61,7 +52,7 @@ addlet("b")
 # ml
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "")
 for (i in 1:3) {
-  val <- ml_reg$prob[ml_reg$id_reg == i]
+  val <- ml_reg[[1]][, i + 1]
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
@@ -81,7 +72,7 @@ for (i in 1:5) {
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
-addlet("d")
+addlet("d", y = .34)
 
 # nb
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "Number of biotracers", ylab = "")
@@ -91,16 +82,19 @@ for (i in 1:5) {
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
-addlet("e")
+addlet("e", y = .34)
 
 # ml
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "")
-points(ml_sam[, 1], ml_sam[, 2], pch = 19)
-lines(ml_sam[, 1], ml_sam[, 2], pch = 19)
-addlet("f")
 
-#
-legend("bottomright", legend = 1:5, col = pal, pch = 19, bty = "n")
+for (i in 1:5) {
+  id <- c(1:3, 5, 10)[i]
+  val <- apply(ml_reg[[id]][, 2:4], 1, mean)
+  lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
+  points(1:17, val, pch = 19, col = pal[i], cex = 1)
+}
+addlet("f", y = .34)
+legend("bottomright", legend = sqs, col = pal, pch = 19, bty = "n")
 
 dev.off()
 
