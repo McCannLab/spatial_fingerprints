@@ -10,12 +10,12 @@ get_res_alt <- function(file) {
   lapply(raw, function(x) apply(x, c(1, 2), mean))
 }
 
-addlet <- function(let, x = 1, y = .98) text(x, y, let, cex = 1.2, font =2)
+addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
 
 sqs <- c(1:3, 5, 10)
-files_lda <- sprintf("output/res_server_nb_lda/nbio_lda_%02d.rds", sqs)
-files_nb <- sprintf("output/res_server_nb_lda/nbio_nb_%02d.rds", sqs)
+files_lda <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_lda_%02d.rds", sqs)
+files_nb <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_nb_%02d.rds", sqs)
 #
 tmp <- readRDS('output/res_f/res_combn_ml_nbio.rds')
 ml_reg <- lapply(tmp, function(x) aggregate(cbind(can, ru, us) ~ nbio, mean, data = x))
@@ -25,7 +25,7 @@ ml_reg <- lapply(tmp, function(x) aggregate(cbind(can, ru, us) ~ nbio, mean, dat
 png("output/figs/fig2.png", width = 183, height = 121, units = "mm", res = 600)
 
 # FIGURE 1
-par(mfrow = c(2, 3), las = 1, mar = c(2, 3.2, 2, .4), mgp = c(2.25, .6, 0))
+par(mfrow = c(2, 3), las = 1, mar = c(2.5, 3.2, 2, .4), mgp = c(2.25, .6, 0))
 
 ## ROW 1
 
@@ -62,7 +62,7 @@ addlet("c")
 
 
 ## ROW 2
-par(mar = c(4, 3.2, 0, .4))
+par(mar = c(4, 3.2, .5, .4))
 
 ## lda
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "Overall performance")
@@ -72,7 +72,7 @@ for (i in 1:5) {
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
-addlet("d", y = .34)
+addlet("d")
 
 # nb
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "Number of biotracers", ylab = "")
@@ -82,7 +82,7 @@ for (i in 1:5) {
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
-addlet("e", y = .34)
+addlet("e")
 
 # ml
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "")
@@ -93,7 +93,7 @@ for (i in 1:5) {
   lines(1:17, val, pch = 19, col = pal[i], lwd = .7)
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
-addlet("f", y = .34)
+addlet("f")
 legend("bottomright", legend = sqs, col = pal, pch = 19, bty = "n")
 
 dev.off()

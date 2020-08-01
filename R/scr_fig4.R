@@ -7,7 +7,7 @@ get_res <- function(file) {
   lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
 }
 
-addlet <- function(let) text(1, .98, let, cex = 1.2, font = 2)
+addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font =2)
 
 
 addaxesN <- function() {
@@ -20,8 +20,8 @@ addaxesN <- function() {
 
 
 idf <- c(1:3, 5, 10, 15)
-files_lda <- sprintf("output/nb_lda_noise/noise_lda_%02d.rds", idf)
-files_nb <- sprintf("output/nb_lda_noise/noise_nb_%02d.rds", idf)
+files_lda <- sprintf("output/res_lda_nb/noise/noise_lda_%02d.rds", idf)
+files_nb <- sprintf("output/res_lda_nb/noise/noise_nb_%02d.rds", idf)
 nf <- length(idf)
 #
 # tmp <- readRDS('output/res_f/res_ml_nbio.rds')
@@ -99,8 +99,8 @@ scr_figSX <- function() {
 
 
 idf <- c(1:3, 5, 10, 15)
-files_lda <- sprintf("output/nb_lda_ndistr/ndistr_lda_%02d.rds", idf)
-files_nb <- sprintf("output/nb_lda_ndistr/ndistr_nb_%02d.rds", idf)
+files_lda <- sprintf("output/res_lda_nb/ndistr/ndistr_lda_%02d.rds", idf)
+files_nb <- sprintf("output/res_lda_nb/ndistr/ndistr_nb_%02d.rds", idf)
 nf <- length(idf)
 
 

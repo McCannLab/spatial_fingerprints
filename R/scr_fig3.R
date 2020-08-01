@@ -15,7 +15,7 @@ get_res_sd <- function(file) {
   lapply(raw, function(x) apply(x$sd, c(1, 2), mean))
 }
 
-addlet <- function(let) text(1, .98, let, cex = 1.2, font = 2)
+addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
 addaxes <- function() {
   axis(1, at = seq(2, 16, 2), labels = NA, lwd = 0, lwd.ticks = .25, tck = -.025)
@@ -25,9 +25,9 @@ addaxes <- function() {
 }
 
 
-files_lda <- sprintf("output/res_server_nb_lda/nbio_lda_%02d.rds",
+files_lda <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_lda_%02d.rds",
   c(1))
-files_nb <- sprintf("output/res_server_nb_lda/nbio_nb_%02d.rds",
+files_nb <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_nb_%02d.rds",
   c(1))
 # lda / pca / sample = 1
 pca_lda <- unlist(lapply(get_res_pca("output/res_f/nbio_pca_lda_01.rds"), function(x) mean(diag(x))))
