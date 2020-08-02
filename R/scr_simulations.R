@@ -2,10 +2,10 @@
 #'
 #' @param method statistical approach, either "lda", "nb" or "ml".
 #' @param nrep number of repetition for every iterations.
-#' @param mxcb maximum number of biotracers combinations (see details).
+#' @param mxcb maximum number of bio-tracers combinations (see details).
 #' @param nsample number of samples (individuals) to be tested (per region).
 #' @param ndistr number of individuals used to generate distributions (per region).
-#' @param nbio number of biotracers to be used.
+#' @param nbio number of bio-tracers to be used.
 #' @param noise noise to be added.
 #' @param pca a logical. See [get_data_ready()].
 #' @param ... further arguments for "ml".

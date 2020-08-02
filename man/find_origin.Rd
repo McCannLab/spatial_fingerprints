@@ -32,7 +32,7 @@ scr_nb(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19)
 
 \item{noise}{noise to be added.}
 
-\item{col_ids}{ids (name or integer) of columns to be used (select biotracers).}
+\item{col_ids}{ids (name or integer) of columns to be used (select bio-tracers).}
 
 \item{toprob}{should the output be a probability.}
 }

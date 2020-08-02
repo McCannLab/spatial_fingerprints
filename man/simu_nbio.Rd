@@ -76,7 +76,7 @@ simu_all(
 
 \item{nrep}{number of repetition for every iterations.}
 
-\item{mxcb}{maximum number of biotracers combinations (see details).}
+\item{mxcb}{maximum number of bio-tracers combinations (see details).}
 
 \item{nsample}{number of samples (individuals) to be tested (per region).}
 
@@ -90,7 +90,7 @@ simu_all(
 
 \item{...}{further arguments for "ml".}
 
-\item{nbio}{number of biotracers to be used.}
+\item{nbio}{number of bio-tracers to be used.}
 }
 \description{
 Simulation functions

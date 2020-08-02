@@ -13,6 +13,9 @@ res_ind <- data.frame(
   mean_distb = 0  # distance between centroids
 )
 
+add_ticks <- function(at) axis(1, at = at, lwd = 0, lwd.ticks = .5, tck = -.025, labels = NA)
+
+
 
 # intertian inter / intra + distance between points
 for (i in 3:19) {
@@ -28,7 +31,7 @@ for (i in 3:19) {
   res_ind$mean_distb[i - 2] <- mean((m1-m2)^2, (m1-m3)^2, (m2-m3)^2)
 }
 
-# Same work for pair of biotracers
+# Same work for pair of bio-tracers
 comb_bio2 <- data.frame(t(combn(3:19, 2)), perf = 0)
 comb_bio2$max_perf1 <- apply(comb_bio2, 1, function(x) getmax(x[1:2], perf = res_ind$perf_ind))
 comb_bio2$mean_perf2 <- apply(comb_bio2, 1, function(x) getsum(x[1:2], perf = res_ind$perf_ind))
@@ -62,7 +65,7 @@ colr <- "#f63267"
 
 png("output/figs/fig5f.png", width = 130, height = 60, units = "mm", res = 600)
 layout(matrix(1:3, ncol = 3), widths = c(1, 1, .35))
-par(bty = "l", las = 1, mar = c(3.2, 3.8, 1, 0), mgp = c(2.6, .7, 0), cex.axis = .8, cex.lab = .9)
+par(las = 1, mar = c(3.2, 3.8, 1, 0), mgp = c(2.6, .7, 0), cex.axis = .8, cex.lab = .9)
 
 vc_pos <- rep(3, 17)
 vc_pos[c(8, 13, 9)] <- 1
@@ -78,8 +81,9 @@ nmb <- gsub("n", "n-", gsub("_", ":", gsub("FA_", "", names(hh))))
 plot(100*res_ind$var_btw/89, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
   cex = .9, ylim = rgy, xlim = 100*c(0, .55), xlab = "", ylab = "Performance")
 par(mgp = c(2, .7, 0))
-title(xlab = "inter-regions inertia (%)")
+title(xlab = "Inter-regions inertia (%)")
 text(100*res_ind$var_btw/89, res_ind$perf_ind, 1:17, pos = vc_pos, offset = .3, col = palg, cex = .8)
+add_ticks(seq(5, 55, 5))
 mtext("a", 3, at = 0, font = 2, cex = .8)
 ##
 vc_pos[c(3, 6, 10)] <- 1
@@ -89,6 +93,7 @@ plot(res_ind$mean_distb, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
   ylim = rgy, xlab = "", ylab = "", cex = .9)
 title(xlab = "Mean distance between centroids")
 text(res_ind$mean_distb, res_ind$perf_ind, 1:17, pos = vc_pos, offset = .3, col = palg, cex = .8)
+add_ticks(seq(.25, 3.25, .5))
 mtext("b", 3, at = 0, font = 2, cex = .8)
 
 
@@ -106,15 +111,15 @@ dev.off()
 png("output/figs/fig6.png", width = 89, height = 52, units = "mm", res = 600)
 
 
-par(mfrow = c(1, 2), yaxs = "i", bty = "l", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.5, .7, 0), cex = .45)
+par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.5, .7, 0), cex = .45)
 plot(comb_bio2$max_perf1, comb_bio2$perf, pch = 20, col = "grey10",
   xlab = c("Best single biotracer performance"),
-  ylab = c("Performance of a pair of biotracers"), xlim = c(.3, .72), ylim = c(.3, .85), cex = .6)
+  ylab = c("Performance of a pair of bio-tracers"), xlim = c(.3, .72), ylim = c(.3, .85), cex = .6)
 abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
 mtext("a", 3, at = 0.3, font = 2, cex = .7)
 
 plot(comb_bio3$max_perf2, comb_bio3$perf, pch = 20, col = "grey10",
-  xlab = "Performance of the best pair of biotracers",
+  xlab = "Performance of the best pair of bio-tracers",
   ylab = "Performance of a combination (n=3)",
   xlim = c(.3, .72) , ylim = c(.3, .85), cex = .6)
 abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
@@ -134,7 +139,7 @@ add_rsq <- function(rsq, x =7.2, y= .32) {
       labels = paste0(format(100*rsq, digit = 3), "%"), offset = .1)
 }
 
-par(mfrow = c(1, 2), yaxs = "i", bty = "l", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .7, 0), cex = .45)
+par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .7, 0), cex = .45)
 
 plot(comb_bio2$mean_distb, comb_bio2$perf, pch = 20, col = "grey10",
   xlab = "Mean distance between centroids",
@@ -152,12 +157,13 @@ rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio3))
 add_rsq(rsq)
 mtext("b", 3, at = 0, font = 2, cex = .7)
 
+
 dev.off()
 
 
 png("output/figs/fig7.png", width = 89, height = 50, units = "mm", res = 600)
 
-par(mfrow = c(1, 2), yaxs = "i", bty = "l", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .65, 0), cex = .45)
+par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .65, 0), cex = .45)
 
 prop2 <- comb_bio2$inert_btw/comb_bio2$inert_tot
 plot(100*prop2, comb_bio2$perf, pch = 20, col = "grey10",
@@ -166,8 +172,9 @@ plot(100*prop2, comb_bio2$perf, pch = 20, col = "grey10",
 f <- fitexp2(comb_bio2, 100*prop2, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio2))
 add_rsq(rsq, x = 45)
-title(xlab = "inter-regions inertia (%)")
+title(xlab = "Inter-regions inertia (%)")
 mtext("a", 3, at = 0, font = 2, cex = .7)
+add_ticks(seq(5, 50, 5))
 
 par(mgp = c(2.6, .65, 0))
 prop3 <- comb_bio3$inert_btw/comb_bio3$inert_tot
@@ -177,8 +184,9 @@ plot(100*prop3, comb_bio3$perf, pch = 20, col = "grey10",
 f <- fitexp2(comb_bio3, 100*prop3, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio3))
 add_rsq(rsq, x = 45)
-title(xlab = "inter-regions inertia (%)")
+title(xlab = "Inter-regions inertia (%)")
 mtext("b", 3, at = 0, font = 2, cex = .7)
+add_ticks(seq(5, 50, 5))
 
 dev.off()
 

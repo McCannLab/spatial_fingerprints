@@ -43,10 +43,10 @@ ml_reg <- aggregate(prob ~ nbio*id_comb, mean, data = res_ml2)
 pca_ml <- split(ml_reg$prob, ml_reg$nbio)
 
 
-png('output/figs/fig3.png',  width = 183, height = 70, units = "mm", res = 600)
+png('output/figs/fig3.png',  width = 183, height = 72, units = "mm", res = 600)
 
-par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1, .4), mgp = c(2.25, .6, 0))
-plot(c(1, 17), c(.33, 1), type = "n", xlab = "", ylab = "overall performance", axes = FALSE)
+par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1.5, .4), mgp = c(2.25, .6, 0))
+plot(c(1, 17), c(.33, 1), type = "n", xlab = "", ylab = "Overall performance", axes = FALSE)
 boxplot(get_res_bb(files_lda[[1]]), col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
 points(1:17, pca_lda, col = 1, pch = 19, cex = 1)
 lines(1:17, pca_lda, col = 1, lwd = .7)
@@ -54,7 +54,7 @@ addaxes()
 addlet('a')
 
 
-plot(c(1, 17), c(.33, 1), type = "n", xlab = "Number of biotracers", ylab = "", axes = FALSE)
+plot(c(1, 17), c(.33, 1), type = "n", xlab = "Number of bio-tracers combined", ylab = "", axes = FALSE)
 boxplot(get_res_bb(files_nb[[1]]), col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
 points(1:17, pca_nb, col = 1, pch = 19, cex = 1)
 lines(1:17, pca_nb, col = 1, lwd = .7)

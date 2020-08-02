@@ -6,7 +6,7 @@
 #' @param ndistr number of sample used to build baseline biotracer distributions.
 #' @param nsample number of samples.
 #' @param noise noise to be added.
-#' @param col_ids ids (name or integer) of columns to be used (select biotracers).
+#' @param col_ids ids (name or integer) of columns to be used (select bio-tracers).
 #' @param toprob should the output be a probability.
 #'
 #' @details
@@ -96,7 +96,7 @@ scr_nb <- function(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19) 
       train <- density(tmp2, adjust = 2)
       for (l in seq_len(ngeo)) {
         smpl <- tmp[id[[l]][-idd], k]
-        ## LL for all samples and for NB LL is added for all biotracers
+        ## LL for all samples and for NB LL is added for all bio-tracers
         out[l, j] <- out[l, j] + isos_likelihood(smpl, train)
       }
     }

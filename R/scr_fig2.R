@@ -13,13 +13,15 @@ get_res_alt <- function(file) {
 addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
 
+add_ticks <- function() axis(1, at = setdiff(1:17, c(5, 10, 15)), lwd = 0, lwd.ticks = .5, tck = -.025, labels = NA)
+
+
 sqs <- c(1:3, 5, 10)
 files_lda <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_lda_%02d.rds", sqs)
 files_nb <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_nb_%02d.rds", sqs)
 #
 tmp <- readRDS('output/res_f/res_combn_ml_nbio.rds')
 ml_reg <- lapply(tmp, function(x) aggregate(cbind(can, ru, us) ~ nbio, mean, data = x))
-
 
 
 png("output/figs/fig2.png", width = 183, height = 121, units = "mm", res = 600)
@@ -38,6 +40,7 @@ for (i in 1:3) {
 }
 title(main = "LDA")
 addlet("a")
+add_ticks()
 
 plot(c(1, 17), c(0.33, 1), type = "n", xlab = "", ylab = "")
 pal <- gpuPalette("insileco")[c(2, 4, 3)]
@@ -48,6 +51,7 @@ for (i in 1:3) {
 }
 title(main = "NB")
 addlet("b")
+add_ticks()
 
 # ml
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "")
@@ -59,7 +63,7 @@ for (i in 1:3) {
 legend("bottomright", legend = c("Canada", "Russia", "USA"), col = pal, pch = 19, bty = "n")
 title(main = "ML")
 addlet("c")
-
+add_ticks()
 
 ## ROW 2
 par(mar = c(4, 3.2, .5, .4))
@@ -73,9 +77,10 @@ for (i in 1:5) {
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
 addlet("d")
+add_ticks()
 
 # nb
-plot(c(1,17), c(0.33, 1), type = "n", xlab = "Number of biotracers", ylab = "")
+plot(c(1,17), c(0.33, 1), type = "n", xlab = "Number of bio-tracers combined", ylab = "")
 pal <- colorRampPalette(c('grey10', 'grey70'))(5)
 for (i in 1:5) {
   val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
@@ -83,6 +88,7 @@ for (i in 1:5) {
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
 addlet("e")
+add_ticks()
 
 # ml
 plot(c(1,17), c(0.33, 1), type = "n", xlab = "", ylab = "")
@@ -94,7 +100,9 @@ for (i in 1:5) {
   points(1:17, val, pch = 19, col = pal[i], cex = 1)
 }
 addlet("f")
+add_ticks()
 legend("bottomright", legend = sqs, col = pal, pch = 19, bty = "n")
+
 
 dev.off()
 
