@@ -13,8 +13,6 @@ res_ind <- data.frame(
   mean_distb = 0  # distance between centroids
 )
 
-add_ticks <- function(at) axis(1, at = at, lwd = 0, lwd.ticks = .5, tck = -.025, labels = NA)
-
 
 
 # intertian inter / intra + distance between points
@@ -29,18 +27,28 @@ for (i in 3:19) {
   m3 <- mean(hh[61:90, i])
   res_ind$var_btw[i - 2] <- 30*(m1^2 + m2^2 + m3^2)
   res_ind$mean_distb[i - 2] <- mean((m1-m2)^2, (m1-m3)^2, (m2-m3)^2)
+  res_ind$dist2[i - 2] <- 1/90*sum(
+    (val1 - m2)^2 + (val1 - m3)^2,
+    (val2 - m1)^2 + (val2 - m3)^2,
+    (val3 - m1)^2 + (val3 - m2)^2
+  )
 }
 
 # Same work for pair of bio-tracers
-comb_bio2 <- data.frame(t(combn(3:19, 2)), perf = 0)
+comb_bio2 <- data.frame(t(combn(3:19, 2)), perf = tmp[[2]])
 comb_bio2$max_perf1 <- apply(comb_bio2, 1, function(x) getmax(x[1:2], perf = res_ind$perf_ind))
 comb_bio2$mean_perf2 <- apply(comb_bio2, 1, function(x) getsum(x[1:2], perf = res_ind$perf_ind))
 comb_bio2$categ <- apply(comb_bio2, 1, function(x) get_categ2(x[1], x[2]))
 comb_bio2$mean_distb <- apply(comb_bio2, 1, function(x) getdist(hh[x[1:2]]))
+comb_bio2$dist2 <- apply(comb_bio2, 1, function(x) getdist2(hh[x[1:2]]))
+
+comb_bio2$max_dist <- apply(comb_bio2, 1, function(x) getmax(x[1:2], perf = res_ind$dist2))
 comb_bio2 <- cbind(comb_bio2, t(apply(comb_bio2, 1, function(x) inertia(hh[x[1:2]]))))
 
 names(comb_bio2)[1:2] <- paste0("bio", 1:2)
-comb_bio2$perf <- tmp[[2]]
+# res_ind$intersect <- intersectn(val1, val1)$ch$vol
+comb_bio2$intersect <- apply(comb_bio2, 1, function(x) getintersect(hh[x[1:2]]))
+
 
 
 getval <- function(ids3, FUN = max) {
@@ -51,21 +59,30 @@ getval <- function(ids3, FUN = max) {
   )
 }
 
-comb_bio3 <- data.frame(t(combn(3:19, 3)), perf = 0)
+comb_bio3 <- data.frame(t(combn(3:19, 3)), perf = tmp[[3]])
 names(comb_bio3)[1:3] <- paste0("bio", 1:3)
 comb_bio3$max_perf2 <- apply(comb_bio3, 1, function(x) getval(x[1:3]))
 comb_bio3$mean_perf2 <- apply(comb_bio3, 1, function(x) getval(x[1:3], FUN = mean))
 comb_bio3$mean_distb <- apply(comb_bio3, 1, function(x) getdist(hh[x[1:3]]))
 comb_bio3 <- cbind(comb_bio3, t(apply(comb_bio3, 1, function(x) inertia(hh[x[1:3]]))))
-
-comb_bio3$perf <- tmp[[3]]
-
+comb_bio3$dist2 <- apply(comb_bio3, 1, function(x) getdist2(hh[x[1:2]]))
+comb_bio3$max_dist2 <- apply(comb_bio3, 1, function(x) getmax(x[1:3], perf = comb_bio2$dist2))
+comb_bio3$intersect <- apply(comb_bio3, 1, function(x) getintersect(hh[x[1:3]]))
+comb_bio3$max_intersect <- apply(comb_bio3, 1, function(x) getmax(x[1:3], perf = comb_bio2$intersect))
+#
+# plot(log(comb_bio2$intersect), comb_bio2$perf, col = 2, xlim = c(-5, 0), ylim=c(.33,.82))
+# points(log(comb_bio3$intersect), comb_bio3$perf, col = 1)
+# plot(comb_bio3$dist2-comb_bio3$max_dist2 , comb_bio3$perf - comb_bio3$max_perf2)
 
 colr <- "#f63267"
 
-png("output/figs/fig5f.png", width = 130, height = 60, units = "mm", res = 600)
+
+add_ticks <- function(at) axis(1, at = at, lwd = 0, lwd.ticks = .5, tck = -.025, labels = NA)
+
+
+png("output/figs/fig5.png", width = 130, height = 60, units = "mm", res = 600)
 layout(matrix(1:3, ncol = 3), widths = c(1, 1, .35))
-par(las = 1, mar = c(3.2, 3.8, 1, 0), mgp = c(2.6, .7, 0), cex.axis = .8, cex.lab = .9)
+par(las = 1, mar = c(3.2, 3.8, 1, 0), mgp = c(2.5, .7, 0), cex.axis = .8, cex.lab = .9)
 
 vc_pos <- rep(3, 17)
 vc_pos[c(8, 13, 9)] <- 1
@@ -79,9 +96,9 @@ dpalg <- sapply(palg, darken, 25)
 nmb <- gsub("n", "n-", gsub("_", ":", gsub("FA_", "", names(hh))))
 #
 plot(100*res_ind$var_btw/89, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
-  cex = .9, ylim = rgy, xlim = 100*c(0, .55), xlab = "", ylab = "Performance")
+  cex = .9, ylim = rgy, xlim = 100*c(0, .55), xlab = "", ylab = "Overall performance")
 par(mgp = c(2, .7, 0))
-title(xlab = "Inter-regions inertia (%)")
+title(xlab = "Inter-regions variance (%)")
 text(100*res_ind$var_btw/89, res_ind$perf_ind, 1:17, pos = vc_pos, offset = .3, col = palg, cex = .8)
 add_ticks(seq(5, 55, 5))
 mtext("a", 3, at = 0, font = 2, cex = .8)
@@ -108,22 +125,51 @@ dev.off()
 
 
 
-png("output/figs/fig6.png", width = 89, height = 52, units = "mm", res = 600)
 
 
-par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.5, .7, 0), cex = .45)
+
+add_ylab <- function(ylab) {
+  par(mgp = c(2.8, .7, 0))
+  title(ylab = ylab)
+  par(mgp = c(1.8, .7, 0))
+}
+
+
+png("output/figs/fig6.png", width = 89, height = 100, units = "mm", res = 600)
+
+par(mfrow = c(2, 2), yaxs = "i", las = 1, mar = c(3.8, 4, 1.6, .5), mgp = c(1.8, .7, 0), cex = .45)
+
+## P1
 plot(comb_bio2$max_perf1, comb_bio2$perf, pch = 20, col = "grey10",
-  xlab = c("Best single biotracer performance"),
-  ylab = c("Performance of a pair of bio-tracers"), xlim = c(.3, .72), ylim = c(.3, .85), cex = .6)
+  xlab = "Best individual performance", ylab = "", xlim = c(.3, .72), ylim = c(.3, .85), cex = .6)
+add_ylab("Overall performance of a pair of bio-tracers")
 abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
 mtext("a", 3, at = 0.3, font = 2, cex = .7)
 
+## P2
 plot(comb_bio3$max_perf2, comb_bio3$perf, pch = 20, col = "grey10",
-  xlab = "Performance of the best pair of bio-tracers",
-  ylab = "Performance of a combination (n=3)",
-  xlim = c(.3, .72) , ylim = c(.3, .85), cex = .6)
+  xlab = "Best pair performance",
+  ylab = "", xlim = c(.3, .72) , ylim = c(.3, .85), cex = .6)
+add_ylab("Overall performance of a triplet")
 abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
 mtext("b", 3, at = 0.3, font = 2, cex = .7)
+
+## P3
+par(mar = c(4, 4, 1.4, .5))
+plot(.5*comb_bio2$mean_perf2, comb_bio2$perf, pch = 20, col = "grey10",
+  xlab = c("Average overall performance", "of the bio-tracersin the pair"),
+  ylab = "", xlim = c(.3, .72), ylim = c(.3, .85), cex = .6)
+add_ylab("Performance of a pair of bio-tracers")
+abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
+mtext("c", 3, at = 0.3, font = 2, cex = .7)
+
+## P4
+plot(comb_bio3$mean_perf2, comb_bio3$perf, pch = 20, col = "grey10",
+  xlab = c("Average over performance", "of the bio-tracers in the triplet"),
+  ylab = "", xlim = c(.3, .72) , ylim = c(.3, .85), cex = .6)
+add_ylab("Performance of a triplet")
+abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
+mtext("d", 3, at = 0.3, font = 2, cex = .7)
 
 dev.off()
 
@@ -143,7 +189,7 @@ par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .
 
 plot(comb_bio2$mean_distb, comb_bio2$perf, pch = 20, col = "grey10",
   xlab = "Mean distance between centroids",
-  ylab = "Performance of a pair of biotracer", ylim = c(.3, .82), cex = .9)
+  ylab = "Overall performance of a pair of bio-tracer", ylim = c(.3, .82), cex = .9)
 f <- fitexp(comb_bio2, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio2))
 add_rsq(rsq, x = 5)
@@ -151,7 +197,7 @@ mtext("a", 3, at = 0, font = 2, cex = .7)
 
 plot(comb_bio3$mean_distb, comb_bio3$perf, pch = 20, col = "grey10",
   xlab = "Mean distance between centroids",
-  ylab = "Performance of a combination (n=3)", ylim = c(.3, .82), cex = .9)
+  ylab = "Overall Performance of a triplet", ylim = c(.3, .82), cex = .9)
 f <- fitexp(comb_bio3, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio3))
 add_rsq(rsq)
@@ -161,18 +207,19 @@ mtext("b", 3, at = 0, font = 2, cex = .7)
 dev.off()
 
 
-png("output/figs/fig7.png", width = 89, height = 50, units = "mm", res = 600)
+png("output/figs/fig7.png", width = 89, height = 100, units = "mm", res = 600)
 
-par(mfrow = c(1, 2), yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.6, .65, 0), cex = .45)
+layout(rbind(c(1,2), 3))
+par(yaxs = "i", las = 1, mar = c(4, 4, 1.5, .5), mgp = c(2.5, .65, 0), cex = .45)
 
 prop2 <- comb_bio2$inert_btw/comb_bio2$inert_tot
 plot(100*prop2, comb_bio2$perf, pch = 20, col = "grey10",
   xlab = "",
-  ylab = "Performance of a pair of biotracer", ylim = c(.3, .82), cex = .8)
+  ylab = "Overall performance of a pair of bio-tracer", ylim = c(.3, .82), cex = .8)
 f <- fitexp2(comb_bio2, 100*prop2, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio2))
 add_rsq(rsq, x = 45)
-title(xlab = "Inter-regions inertia (%)")
+title(xlab = "Inter-regions variance (%)")
 mtext("a", 3, at = 0, font = 2, cex = .7)
 add_ticks(seq(5, 50, 5))
 
@@ -180,13 +227,27 @@ par(mgp = c(2.6, .65, 0))
 prop3 <- comb_bio3$inert_btw/comb_bio3$inert_tot
 plot(100*prop3, comb_bio3$perf, pch = 20, col = "grey10",
   xlab = "",
-  ylab = "Performance of a combination (n=3)", ylim = c(.3, .82), cex = .8)
+  ylab = "Overall performance of a triplet", ylim = c(.3, .82), cex = .8)
 f <- fitexp2(comb_bio3, 100*prop3, lty = 2, col = colr,  lwd = 1)
 rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio3))
 add_rsq(rsq, x = 45)
-title(xlab = "Inter-regions inertia (%)")
+title(xlab = "Inter-regions variance (%)")
 mtext("b", 3, at = 0, font = 2, cex = .7)
 add_ticks(seq(5, 50, 5))
+
+
+plot(log10(comb_bio2$intersect), comb_bio2$perf, col = "grey60", xlim = c(-2.2
+   , -.2), ylim = c(.3,.82), pch = 20, cex = .6, ylab = "Overall performance", xlab = "1-log10(region overlap)")
+points(log10(comb_bio3$intersect), comb_bio3$perf, col = 1, pch = 20, cex = .6)
+legend("topright", legend = c("pair", "triplet"), col = c("grey60", 1), pch = 19, bty = "n")
+mtext("c", 3, at = -2.2, font = 2, cex = .7)
+f <- fitexp3(
+  c(log10(comb_bio2$intersect), log10(comb_bio3$intersect)),
+  c(comb_bio2$perf, comb_bio3$perf),
+  lty = 2, col = colr,  lwd = 1)
+rsq <- 1 - deviance(f)/deviance(lm(perf~1, data = comb_bio3))
+add_rsq(rsq, x = - 2)
+add_ticks(setdiff(seq(-2.2, -.2, .1), c(-2, 0, .5)))
 
 dev.off()
 

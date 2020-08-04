@@ -86,7 +86,7 @@ simu_all(
 
 \item{pca}{a logical. See \code{\link[=get_data_ready]{get_data_ready()}}.}
 
-\item{mx_bio}{maximum biotracer number. '}
+\item{mx_bio}{maximum bio-tracer number. '}
 
 \item{...}{further arguments for "ml".}
 

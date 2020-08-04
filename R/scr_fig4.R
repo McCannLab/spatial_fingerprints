@@ -43,12 +43,12 @@ for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
   lines(sqn, val, pch = 19, col = pal[i], lwd = .7)
   points(sqn, val, pch = 19, col = pal[i], cex = .8)
+  print(val)
 }
 addlet("a")
 addaxesN()
-
 # nb
-plot(range(sqn), c(0.33, 1), type = "n", xlab = "Noise", ylab = "", axes = FALSE)
+plot(range(sqn), c(0.33, 1), type = "n", xlab = "Noise level", ylab = "", axes = FALSE)
 for (i in seq_len(nf)) {
   val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
   lines(sqn, val, pch = 19, col = pal[i], lwd = .7)

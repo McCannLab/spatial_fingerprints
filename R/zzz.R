@@ -16,7 +16,7 @@
 #' @importFrom stats dist lm nls
 #' @importFrom sf st_as_sf st_geometry
 #' @importFrom utils combn write.csv
-
+#' @importFrom geometry intersectn
 
 NULL
 
@@ -169,8 +169,75 @@ getdist <- function(hh) {
   m1 <- apply(hh[1:30, ], 2, mean)
   m2 <- apply(hh[31:60, ], 2, mean)
   m3 <- apply(hh[61:90, ], 2, mean)
+  # m11 <- apply(hh[1:30, ] - matmean(m1), 2, mean)
+  # m22 <- apply(hh[31:60, ] - matmean(m2), 2, mean)
+  # m33 <- apply(hh[61:90, ] - matmean(m3), 2, mean)
   mean(sum((m1-m2)^2), sum((m1-m3)^2), sum((m2-m3)^2))
+  # mean(
+  #   sum((m1-m2)^2 - (m1-m11)^2 - (m2-m2)^2),
+  #   sum((m1-m3)^2 - (m1-m11)^2 - (m3-m3)^2),
+  #   sum((m2-m3)^2 - (m2-m22)^2 - (m3-m3)^2)
+  # )
 }
+
+getdist2 <- function(hh) {
+  m1 <- apply(hh[1:30, ], 2, mean)
+  m2 <- apply(hh[31:60, ], 2, mean)
+  m3 <- apply(hh[61:90, ], 2, mean)
+  # m11 <- apply(hh[1:30, ] - matmean(m1), 2, mean)
+  # m22 <- apply(hh[31:60, ] - matmean(m2), 2, mean)
+  # m33 <- apply(hh[61:90, ] - matmean(m3), 2, mean)
+  # mean(sum((m1-m2)^2), sum((m1-m3)^2), sum((m2-m3)^2))
+  nm <- apply(rbind(
+      (hh[1:30, ] - matmean(m1))^2,
+      (hh[31:60, ] - matmean(m2))^2,
+      (hh[61:90, ] - matmean(m3))^2),
+      1, function(x) sqrt(sum(x)))
+  dn <- apply(rbind(
+      (hh[1:30, ] - matmean(m2))^2,
+      (hh[1:30, ] - matmean(m3))^2,
+      (hh[31:60, ] - matmean(m1))^2,
+      (hh[31:60, ] - matmean(m3))^2,
+      (hh[61:90, ] - matmean(m1))^2,
+      (hh[61:90, ] - matmean(m2))^2),
+      1, function(x) sqrt(sum(x)))
+
+    # print(dn)
+  # (1- mean(nm[1:30])/mean(dn[1:60]))*(1 - mean(nm[31:60])/mean(dn[61:120]))*(1- mean(nm[61:90])/mean(dn[121:180]))
+    # (1 - mean(nm[1:30])/mean(dn[1:30])) *
+    # (1 - mean(nm[1:30])/mean(dn[31:60])) *
+    # (1 - mean(nm[31:60])/mean(dn[61:90])) *
+    # (1 - mean(nm[31:60])/mean(dn[91:120])) *
+    # (1 - mean(nm[61:90])/mean(dn[121:150])) *
+    # (1 - mean(nm[61:90])/mean(dn[151:180]))
+  # mean(apply(nm, 1, function(x) sqrt(sum(x))))/mean(apply(dn, 2, function(x) sqrt(sum(x))))
+  # mean(apply(dn, 1, function(x) sqrt(sum(x))))
+  mean(nm)/mean(dn)
+}
+
+matmean <- function(m)
+  matrix(m, nrow = 30, ncol = length(m), byrow = TRUE)
+
+
+getintersect <- function(hh, keep = 25) {
+  m1 <- apply(hh[1:30, ], 2, mean)
+  m2 <- apply(hh[31:60, ], 2, mean)
+  m3 <- apply(hh[61:90, ], 2, mean)
+  od1 <- order(apply((hh[1:30, ] - matmean(m1))^2, 1, sum))[1:keep]
+  od2 <- order(apply((hh[31:60, ] - matmean(m2))^2, 1, sum))[1:keep]
+  od3 <- order(apply((hh[61:90, ] - matmean(m3))^2, 1, sum))[1:keep]
+  i1 <- intersectn(hh[c(1:30)[od1],], hh[c(31:60)[od2],])
+  i2 <- intersectn(hh[c(1:30)[od1],], hh[c(61:90)[od3],])
+  i3 <- intersectn(hh[c(31:60)[od2],], hh[c(61:90)[od3],])
+  (i1$ch$vol + i2$ch$vol + i3$ch$vol)/(i1$ch1$vol + i1$ch2$vol + i3$ch2$vol)
+  # max(c(i1$ch$vol, i2$ch$vol, i3$ch$vol))
+}
+
+# out <- double(16)
+# for (i in 2:17) {
+#   print(i)
+#   out[i] <- getintersect(hh[,-c(1:2)][,1:i])
+# }
 
 fitexp <- function(data, ...) {
   mod <- nls(perf ~ 1 - .66*exp(-d*mean_distb), list(d = 1), data = data)
@@ -185,5 +252,13 @@ fitexp2 <- function(data, cl, ...) {
   d <- coefficients(mod)
   x <- seq_rg(cl, 100)
   lines(x, 1 - .66*exp(-d*x), ...)
+  invisible(mod)
+}
+
+fitexp3 <- function(x, y, ...) {
+  mod <- nls(y ~ 1-.66* exp(d*x), start = list(d = 1))
+  d <- coefficients(mod)
+  nx <- seq_rg(x, 100)
+  lines(nx, 1 - .66* exp(d * nx), ...)
   invisible(mod)
 }

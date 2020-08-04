@@ -9,7 +9,7 @@
 #' @param noise noise to be added.
 #' @param pca a logical. See [get_data_ready()].
 #' @param ... further arguments for "ml".
-#' @param mx_bio maximum biotracer number. '
+#' @param mx_bio maximum bio-tracer number. '
 #'
 #' @details
 #' If the total number of combinations is smaller than `mxcb` then the
@@ -186,11 +186,5 @@ myreplic <- function(FUN, arg, nrep = 100) {
   list(mean = apply(tmp, c(1, 2), mean), sd = apply(tmp, c(1, 2), sd))
 }
 
-get_res <- function(x) {
-  res <- list()
-  res$ksi <- lapply(Filter(Negate(is.null), x$ksi), apply, c(1,2), mean)
-  res$lda <- lapply(Filter(Negate(is.null), x$lda), apply, c(1,2), mean)
-  res
-}
 
 get_diagsum <- function(x) unlist(lapply(x, function(x) sum(diag(x))))
