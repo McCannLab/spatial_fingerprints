@@ -21,20 +21,12 @@ pipeline <- function() {
     "spatialfingerprints")
   #
 
-  # for (i in 1:20) {
-  #   out <- simu_nbio("lda", mx_cb = 1000, nrep = 1000, nsample = i,
-  #     ndistr = 20)
-  #   saveRDS(out, file = paste0("lda_nbio_", nsample, ".rds")
-  #   out <- simu_nbio("nb", mx_cb = 1000, nrep = 1000, nsample = i,
-  #     ndistr = 20)
-  #   saveRDS(out, file = paste0("lda_nbio_", nsample, ".rds")
-  # }
-
   msgInfo("Main Figures...")
   scr_fig_concept()
-  scr_fig2()
-  scr_fig3()
-
+  # scr_fig2()
+  # scr_fig3()
+  # scr_fig4()
+  # scr_fig5()
 
   msgInfo("SI Figures...")
   scr_theory()

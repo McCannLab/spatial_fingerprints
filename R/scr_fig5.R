@@ -1,6 +1,6 @@
 #' Figures 5, 6 and 7
 #'
-#' Code to reproduce figure s 5, 6 and 7.
+#' Code to reproduce figures 5, 6 and 7.
 #'
 #' @param file path to results for individual performances as well as performances of all pairs and triplets.
 #' @export
@@ -232,6 +232,5 @@ dev.off()
 
 msgSuccess_fig("7", "output/figs")
 invisible(0)
-
 
 }

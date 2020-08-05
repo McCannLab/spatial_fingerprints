@@ -8,7 +8,7 @@ scr_fig4(
   path = "output/res_lda_nb/nbio/non_pca",
   file_ml = "output/res_f/res_combn_ml_nbio.rds",
   files_pca = c("output/res_f/nbio_pca_lda_01.rds", "output/res_f/nbio_pca_nb_01.rds",
-    "'output/res_f/ml_nbio_pca.rds'")
+    "output/res_f/ml_nbio_pca.rds")
 )
 }
 \arguments{

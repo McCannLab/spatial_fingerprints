@@ -7,7 +7,8 @@
 #'
 #' @export
 
-scr_fig2 <- function(path = "output/res_lda_nb/nbio/non_pca", file_ml = "output/res_f/res_combn_ml_nbio.rds") {
+scr_fig2 <- function(path = "output/res_lda_nb/nbio/non_pca",
+  file_ml = "output/res_f/res_combn_ml_nbio.rds") {
 
 ## helper functions
 get_res <- function(file) {

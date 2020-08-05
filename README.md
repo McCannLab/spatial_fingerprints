@@ -13,3 +13,9 @@ remotes::install_github("McCannLab/spatial_fingerprints")
 Once the package contains all data and code needed to reproduce the analysis
 we carried out for NBC and LDA. Julia is included...
 Simulations were run on Compute Canada's servers and the total is roughly .5core year.
+
+
+```R
+library(spatialfingerprints)
+pipeline()
+```
