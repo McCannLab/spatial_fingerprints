@@ -8,7 +8,7 @@
 #'
 #' @export
 
-script_fig_concept <- function() {
+scr_fig_concept <- function() {
 
   msgInfo("Creating figure 1")
 

@@ -1,74 +1,163 @@
-scr_fig3 <- function() {
+#' Figure 3
+#'
+#' Code to reproduce figure 3 (noise addition).
+#'
+#' @param path Path to results files for LDA and NBC.
+#' @param file_ml Path to results file (a rds file) for MLP.
+#'
+#' @export
 
-get_res_bb <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x$mean, 3, function(x) mean(diag(x))))
+scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/res_combn_ml_nbio.rds") {
+
+  ## Helper functions
+  get_res <- function(file) {
+    # read diles
+    raw <- readRDS(file)
+    # remove empty elements
+    raw <- Filter(Negate(is.null), raw)
+    lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
+  }
+
+  addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
+
+  addaxesN <- function() {
+    axis(1, at = setdiff(1:26, seq(1, 26, 5)), labels = NA, lwd = 0, lwd.ticks = 0.25,
+      tck = -0.025)
+    axis(1, at = seq(1, 26, 5), labels = c(TeX("$10^{-4}$"), TeX("$10^{-3}$"),
+      TeX("$10^{-2}$"), TeX("$10^{-1}$"), TeX("$1$"), TeX("$10$")), lwd = 0,
+      lwd.ticks = 0.5)
+    axis(2, lwd = 0, lwd.ticks = 0.5)
+    box()
+  }
+
+  ## reading files
+  idf <- c(1:3, 5, 10, 15)
+  msgInfo("Reading files for figure 3")
+  files_lda <- sprintf(paste0(path, "/noise_lda_%02d.rds"), idf)
+  files_nb <- sprintf(paste0(path, "/noise_nb_%02d.rds"), idf)
+  nf <- length(idf)
+  # tmp <- readRDS('output/res_f/res_ml_nbio.rds') res_ml <- tmp[tmp$id_reg_test ==
+  # tmp$id_reg_true, ] ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data =
+  # res_ml) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
+
+  ## Figure
+  output_dir("output/figs")
+  msgInfo("Creating figure 3")
+  sqn <- 1:26
+
+  png("output/figs/fig3.png", width = 183, height = 70, units = "mm", res = 600)
+
+  par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1, 0.4), mgp = c(2.25, 0.6, 0))
+
+  ## LDA
+  plot(range(sqn), c(0.33, 1), type = "n", axes = FALSE, xlab = "",
+    ylab = "Overall performance")
+  pal <- colorRampPalette(c("grey5", "grey75"))(nf)
+  for (i in seq_len(nf)) {
+    val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
+    lines(sqn, val, pch = 19, col = pal[i], lwd = 0.7)
+    points(sqn, val, pch = 19, col = pal[i], cex = 0.8)
+  }
+  addlet("a")
+  addaxesN()
+  # NBC
+  plot(range(sqn), c(0.33, 1), type = "n", xlab = "Noise level", ylab = "", axes = FALSE)
+  for (i in seq_len(nf)) {
+    val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
+    lines(sqn, val, pch = 19, col = pal[i], lwd = 0.7)
+    points(sqn, val, pch = 19, col = pal[i], cex = 0.8)
+  }
+  addlet("b")
+  addaxesN()
+  ## MLP
+  plot(range(sqn), c(0.33, 1), type = "n", xlab = "", ylab = "")
+  addlet("c")
+  #
+  legend("topright", legend = idf, col = pal, pch = 19, bty = "n")
+
+  dev.off()
+
+  msgSuccess_fig("3", "output/figs")
+  invisible(0)
+
 }
 
-get_res_pca <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x, c(1, 2), mean))
+
+
+
+
+
+scr_figSX <- function() {
+
+  ## Helper functions
+  get_res <- function(file) {
+    raw <- readRDS(file)
+    # remove empty elements
+    raw <- Filter(Negate(is.null), raw)
+    lapply(raw, function(x) apply(x$mean, c(1, 2), mean))
+  }
+
+  addaxesD <- function() {
+    sq <- seq(1, 23, 3)
+    axis(1, at = setdiff(1:23, sq), labels = NA, lwd = 0, lwd.ticks = 0.25, tck = -0.025)
+    axis(1, at = sq, labels = sq + 3, lwd = 0, lwd.ticks = 0.5)
+    axis(2, lwd = 0, lwd.ticks = 0.5)
+    box()
+  }
+
+  addlet <- function(let) text(1, 0.98, let, cex = 1.2, font = 2)
+
+
+  ## Very similar => fig S
+
+  idf <- c(1:3, 5, 10, 15)
+  files_lda <- sprintf("output/res_lda_nb/ndistr/ndistr_lda_%02d.rds", idf)
+  files_nb <- sprintf("output/res_lda_nb/ndistr/ndistr_nb_%02d.rds", idf)
+  nf <- length(idf)
+
+
+  # tmp <- readRDS('output/res_f/res_ml_nbio.rds') res_ml <- tmp[tmp$id_reg_test ==
+  # tmp$id_reg_true, ] ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data =
+  # res_ml) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
+
+  output_dir("output/figs")
+  msgInfo("Creating figure SX")
+  png("output/figs/figSX.png", width = 183, height = 70, units = "mm", res = 600)
+
+  par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1, 0.4), mgp = c(2.25, 0.6, 0))
+
+  sqd <- 1:23
+
+  ## lda
+  plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "Overall performance",
+    axes = FALSE)
+  pal <- colorRampPalette(c("grey10", "grey70"))(nf)
+  for (i in seq_len(nf)) {
+    val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
+    lines(sqd, val, pch = 19, col = pal[i], lwd = 0.7)
+    points(sqd, val, pch = 19, col = pal[i], cex = 0.8)
+  }
+  addlet("a")
+  addaxesD()
+
+  # nb
+  plot(range(sqd), c(0.33, 1), type = "n", xlab = "Noise", ylab = "", axes = FALSE)
+  for (i in seq_len(nf)) {
+    val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
+    lines(sqd, val, pch = 19, col = pal[i], lwd = 0.7)
+    points(sqd, val, pch = 19, col = pal[i], cex = 0.8)
+  }
+  addaxesD()
+  addlet("b")
+
+  # ml
+  plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "")
+  addlet("c")
+  legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n")
+
+  dev.off()
+
+  msgSuccess_fig("SX", "output/figs")
+  invisible(0)
+
 }
-
-get_res_sd <- function(file) {
-  raw <- readRDS(file)
-  lapply(raw, function(x) apply(x$sd, c(1, 2), mean))
-}
-
-addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
-
-addaxes <- function() {
-  axis(1, at = seq(2, 16, 2), labels = NA, lwd = 0, lwd.ticks = .25, tck = -.025)
-  axis(1, at = seq(1, 17, 2), labels = seq(1, 17, 2), lwd = 0, lwd.ticks = .5)
-  axis(2,  lwd = 0,  lwd.ticks = .5)
-  box()
-}
-
-
-files_lda <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_lda_%02d.rds",
-  c(1))
-files_nb <- sprintf("output/res_lda_nb/nbio/non_pca/nbio_nb_%02d.rds",
-  c(1))
-# lda / pca / sample = 1
-pca_lda <- unlist(lapply(get_res_pca("output/res_f/nbio_pca_lda_01.rds"), function(x) mean(diag(x))))
-pca_nb <- unlist(lapply(get_res_pca("output/res_f/nbio_pca_nb_01.rds"), function(x) mean(diag(x))))
-
-
-tmp <- readRDS('output/res_f/ml_nbio_pca.rds')
-res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
-ml_pca <- aggregate(prob ~ nbio, mean, data = res_ml)
-tmp2 <- readRDS('output/res_f/res_ml_nbio.rds')
-res_ml2 <- tmp2[tmp2$id_reg_test == tmp2$id_reg_true, ]
-ml_reg <- aggregate(prob ~ nbio*id_comb, mean, data = res_ml2)
-pca_ml <- split(ml_reg$prob, ml_reg$nbio)
-
-
-png('output/figs/fig3.png',  width = 183, height = 72, units = "mm", res = 600)
-
-par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1.5, .4), mgp = c(2.25, .6, 0))
-plot(c(1, 17), c(.33, 1), type = "n", xlab = "", ylab = "Overall performance", axes = FALSE)
-boxplot(get_res_bb(files_lda[[1]]), col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
-points(1:17, pca_lda, col = 1, pch = 19, cex = 1)
-lines(1:17, pca_lda, col = 1, lwd = .7)
-addaxes()
-addlet('a')
-
-
-plot(c(1, 17), c(.33, 1), type = "n", xlab = "Number of bio-tracers combined", ylab = "", axes = FALSE)
-boxplot(get_res_bb(files_nb[[1]]), col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
-points(1:17, pca_nb, col = 1, pch = 19, cex = 1)
-lines(1:17, pca_nb, col = 1, lwd = .7)
-addaxes()
-addlet('b')
-
-plot(c(1, 17), c(.33, 1), type = "n",  xlab = "", ylab = "", axes = FALSE)
-boxplot(pca_ml, col = "grey95", add = TRUE, pch = 19, border = "grey55", lwd = .8, cex = .5, axes = FALSE)
-points(1:17, ml_pca[, 2], col = 1, pch = 19, cex = 1)
-lines(1:17, ml_pca[, 2], col = 1, lwd = .7)
-addaxes()
-addlet('c')
-
-dev.off()
-
-}
-

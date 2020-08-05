@@ -31,7 +31,9 @@ pipeline <- function() {
   # }
 
   msgInfo("Main Figures...")
-  script_fig_concept()
+  scr_fig_concept()
+  scr_fig2()
+  scr_fig3()
 
 
   msgInfo("SI Figures...")

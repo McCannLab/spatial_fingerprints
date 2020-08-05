@@ -14,7 +14,7 @@ isos_err_distrib(vc_values, vc_errors, sample_size)
 \item{sample_size}{size of the samples to be drawn.}
 }
 \value{
-A vector of size \code{sample_size}
+A vector of size \code{sample_size}.
 }
 \description{
 Sample in a distribution of values for which an error value in associated.
