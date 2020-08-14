@@ -23,7 +23,7 @@ scr_nb(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19)
 \arguments{
 \item{method}{statistical approach, either "lda", "nb" or "ml".}
 
-\item{df_dat}{biotracer data sets. Note that by default, it loads \code{df_all()}
+\item{df_dat}{bio-tracer data sets. Note that by default, it loads \code{df_all()}
 (see \code{\link[=get_data_ready]{get_data_ready()}}).}
 
 \item{ndistr}{number of sample used to build baseline biotracer distributions.}

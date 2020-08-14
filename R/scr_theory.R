@@ -44,41 +44,38 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
   msgSuccess_fig("S2")
 
   msgInfo("Running simulations for figure S3")
-  res_sim <- list(
-    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1)),
-    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.2)),
-    twonorm_simu(nsz, nrep, c(0, 0), c(1, 1.5)),
-    twonorm_simu(nsz, nrep, c(0, 0), c(1, 2)),
-    twonorm_simu(nsz, nrep, c(0, 0), c(1, 5))
-  )
-  res_ana <- list(
-    si_val(nsz, c(1, 1)),
-    si_val(nsz, c(1, 1.2)),
-    si_val(nsz, c(1, 1.5)),
-    si_val(nsz, c(1, 2)),
-    si_val(nsz, c(1, 5))
-  )
+  si2 <- c(1, 1.2, 1.5, 2, 5)
+  res_ana <- res_sim <- list()
+  for (i in seq_along(si2)) {
+    res_sim[[i]] <- twonorm_simu(nsz, nrep, c(0, 0), c(1, si2[i]))
+    res_ana[[i]] <- si_val(nsz, c(1, si2[i]))
+  }
   plot_si("output/figS3.png", nsz, res_sim, res_ana)
   msgSuccess_fig("S3")
 
 
   ## Dissimilarity - MU with 2, 5 and 10 observations
   msgInfo("Running simulations for figure S4")
-  res_sim <- list(
-    n_norm_simu(nsz, nrep, rep(0, 2), rep(1, 2), rep(.2, 2), rep(1, 2)),
-    n_norm_simu(nsz, nrep, rep(0, 3), rep(1, 3), rep(.2, 3), rep(1, 3)),
-    n_norm_simu(nsz, nrep, rep(0, 5), rep(1, 5), rep(.2, 5), rep(1, 5)),
-    n_norm_simu(nsz, nrep, rep(0, 10), rep(1, 10), rep(.2, 10), rep(1, 10)),
-    n_norm_simu(nsz, nrep, rep(0, 20), rep(1, 20), rep(.2, 20), rep(1, 20))
-  )
-  res_ana <- list(
-    mu_val_n(c(0, 0), c(.2, .2), 1, nsz),
-    mu_val_n(rep(0, 3), rep(.2, 3), 1, nsz),
-    mu_val_n(rep(0, 5), rep(.2, 5), 1, nsz),
-    mu_val_n(rep(0, 10), rep(.2, 10), 1, nsz),
-    mu_val_n(rep(0, 20), rep(.2, 20), 1, nsz)
-  )
-  plot_si("output/figS4.png", nsz, res_sim, res_ana)
+
+  # results for an increasing number of samples
+  ndim <- c(2, 3, 5, 10, 20)
+  res_sim <- res_ana <- list()
+  for (i in seq_along(nspl)) {
+    res_sim[[i]] <- n_norm_simu(nsz, nrep, rep(0, ndim[i]), rep(0.2, ndim[i]),
+      rep(1, ndim[i]), rep(1, ndim[i]))
+    res_ana[[i]] <- mu_val_n(rep(0, ndim[i]), rep(.2, ndim[i]), 1, nsz)
+  }
+
+  # results for an increasing number of bio-tracers
+  res_dim <- res_ana_dim <- list()
+  # #samples
+  nspl <- c(1, 3, 5, 10, 20)
+  for (i in seq_along(nspl)) {
+    res_dim[[i]] <- n_norm_dim(nspl[i], nrep, 0, .2, 1, 1)
+    res_ana_dim[[i]] <- ana_dim(0, .2, 1, 1:50, nspl[i])
+  }
+
+  plot_si2("output/figS4.png", nsz, res_sim, res_ana, 1:50, res_dim, res_ana_dim)
   msgSuccess_fig("S4")
 
 
@@ -113,8 +110,7 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
 }
 
 
-
-
+# scatter plot for several set of simulation and the analytical results
 plot_si <- function(filename, seqx, res_sim, res_ana, cex_pt = 1.1) {
   png(filename, width = 5.5, height = 5, units = "in", res = 600)
     par(las = 1, bty = "l", mar = c(4.25, 4.25, 2, .5), mgp = c(2.6, .65, 0))
@@ -126,6 +122,35 @@ plot_si <- function(filename, seqx, res_sim, res_ana, cex_pt = 1.1) {
       points(seqx, res_sim[[i]], cex = cex_pt, pch = 19, col = pal[i])
       lines(seqx, res_ana[[i]], col = 2, lwd = 1.4)
     }
+  dev.off()
+}
+
+# 2 panels
+plot_si2 <- function(filename, seqx, res_sim, res_ana, seqx2, res_sim2,
+  res_ana2, cex_pt = 1.1) {
+  png(filename, width = 10, height = 5, units = "in", res = 600)
+    par(mfrow = c(1, 2), las = 1, bty = "l", mar = c(4.25, 4.25, 2.5, 0), mgp = c(2.6, .65, 0))
+    # left panel
+    n <- length(res_sim)
+    pal <- colorRampPalette(c("black", "grey80"))(n)
+    plot(range(seqx), y = c(.5, 1), cex = cex_pt, pch = 19, type = "n",
+        xlab = "Sample size", ylab = TeX("$E(\\[A_1|S\\])$"))
+    for (i in seq_len(n)) {
+      points(seqx, res_sim[[i]], cex = cex_pt, pch = 19, col = pal[i])
+      lines(seqx, res_ana[[i]], col = 2, lwd = 1.4)
+    }
+    mtext("(a)", 3, at = 0, font = 2, line = 1.1, cex = 1.2)
+    # right panel
+    par(mar = c(4.25, 3.25, 2.5, 1))
+    n <- length(res_sim2)
+    pal <- colorRampPalette(c("black", "grey80"))(n)
+    plot(range(seqx2), y = c(.5, 1), cex = cex_pt, pch = 19, type = "n",
+        xlab = "Number of bio-tracers", ylab = "")
+    for (i in seq_len(n)) {
+      points(seqx2, res_sim2[[i]], cex = cex_pt, pch = 19, col = pal[i])
+      lines(seqx2, res_ana2[[i]], col = 2, lwd = 1.4)
+    }
+    mtext("(b)", 3, at = 0, font = 2, line = 1.1, cex = 1.2)
   dev.off()
 }
 
@@ -149,7 +174,7 @@ plot_log_ratio <- function(filename) {
     axis(2)
     sql <- c(2, 5, 10)
     axis(1, at = c(rev(-log10(sql)), 0, log10(sql)),
-      labels = c(rev(-sql), 1, sql))
+      labels = c(c(0.1, 0.2, 0.5), 1, sql))
     box(bty = "l")
   dev.off()
   invisible(NULL)
@@ -276,7 +301,7 @@ n_norm_simu <- function(vc_sz, nrep, mu_1, mu_2, si_1, si_2) {
 }
 
 
-n_norm_0 <- function(sz, mu_1, si_1, mu_2, si_2) {
+n_norm_0 <- function(sz, mu_1, mu_2, si_1, si_2) {
 
   mus_1 <- rep(mu_1, each = sz)
   sis_1 <- rep(si_1, each = sz)
@@ -284,11 +309,23 @@ n_norm_0 <- function(sz, mu_1, si_1, mu_2, si_2) {
   sis_2 <- rep(si_2, each = sz)
   r1 <- rnorm(length(mu_1)*sz, mus_1, sis_1)
 
-  1/(1 + exp(sum(
+  1 / (1 + exp(sum(
     dnorm(r1, mus_2, sis_2, log = TRUE),
     - dnorm(r1, mus_1, sis_1, log = TRUE)
     )))
 }
+
+
+# Calls n_norm_sim() to get results for an increasing number of bio-tracers
+n_norm_dim <- function(nsz, nrep, mu_1, mu_2, si_1, si_2, sq_dim = c(1:50)) {
+  out <- double(length(sq_dim))
+  for (i in seq_along(sq_dim)) {
+    out[i] <- n_norm_simu(nsz, nrep, rep(mu_1, sq_dim[i]), rep(mu_2, sq_dim[i]),
+    rep(si_1, sq_dim[i]), rep(si_2, sq_dim[i]))
+  }
+  out
+}
+
 
 
 ## Analytical results
@@ -299,9 +336,19 @@ mu_val <- function(mu, si, n) {
     x/(2 * si^2) * (mu[2]-mu[1])^2, sigma = sqrt(x) * abs(mu[2]-mu[1])/si)[1]))
 }
 
+# results for an increasing number of samples combined
 # NB sigma (si) should be constant
 mu_val_n <- function(mu_1, mu_2, si, n) {
   unlist(lapply(n, function(x) logitnorm::momentsLogitnorm(
+    x/(2 * si^2) * sum((mu_2 - mu_1)^2), sigma = sqrt(x) * sqrt(sum(((mu_2 - mu_1)/si)^2)))[1]))
+}
+
+# results for an increasing number of bio-tracers combined
+# NB here n should has 1
+# NB mu_1 and mu_2 are assumed to be the same for all bio-tracers to ease the
+# computation but the results obtained are more general
+ana_dim <- function(mu_1, mu_2, si, n, q) {
+  unlist(lapply(n*q, function(x) logitnorm::momentsLogitnorm(
     x/(2 * si^2) * sum((mu_2 - mu_1)^2), sigma = sqrt(x) * sqrt(sum(((mu_2 - mu_1)/si)^2)))[1]))
 }
 

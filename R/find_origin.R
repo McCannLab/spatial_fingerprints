@@ -1,7 +1,7 @@
 #' Core functions to asses overall performance of LDA, NB and ML.
 #'
 #' @param method statistical approach, either "lda", "nb" or "ml".
-#' @param df_dat biotracer data sets. Note that by default, it loads `df_all()`
+#' @param df_dat bio-tracer data sets. Note that by default, it loads `df_all()`
 #' (see [get_data_ready()]).
 #' @param ndistr number of sample used to build baseline biotracer distributions.
 #' @param nsample number of samples.

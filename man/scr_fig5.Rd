@@ -10,5 +10,5 @@ scr_fig5(file = "output/res_lda_nb/all123/res_lda_123.rds")
 \item{file}{path to results for individual performances as well as performances of all pairs and triplets.}
 }
 \description{
-Code to reproduce figure s 5, 6 and 7.
+Code to reproduce figures 5, 6 and 7.
 }

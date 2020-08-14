@@ -1,7 +1,7 @@
 Package: spatialfingerprints
 Title: Research compendium
 Version: 0.0.0.9000
-Date: 2020-08-05
+Date: 2020-08-14
 Authors@R: c(
   person("Kevin", "Cazelles", email = "kcazelle@uoguelph.ca", comment = c(ORCID = "0000-0001-6619-9874"), role = c("aut", "cre"))
   )
@@ -34,5 +34,5 @@ Remotes:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
