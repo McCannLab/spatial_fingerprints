@@ -39,19 +39,15 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
 
 
   ## Dissimilarity - SIGMA
-  msgInfo("Creating figure S2")
-  plot_log_ratio("output/figS2.png")
-  msgSuccess_fig("S2")
-
-  msgInfo("Running simulations for figure S3")
+  msgInfo("Running simulations for figure S2")
   si2 <- c(1, 1.2, 1.5, 2, 5)
   res_ana <- res_sim <- list()
   for (i in seq_along(si2)) {
     res_sim[[i]] <- twonorm_simu(nsz, nrep, c(0, 0), c(1, si2[i]))
     res_ana[[i]] <- si_val(nsz, c(1, si2[i]))
   }
-  plot_si("output/figS3.png", nsz, res_sim, res_ana)
-  msgSuccess_fig("S3")
+  plot_figS2("output/figS2.png", nsz, res_sim, res_ana)
+  msgSuccess_fig("S2")
 
 
   ## Dissimilarity - MU with 2, 5 and 10 observations
@@ -60,7 +56,7 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
   # results for an increasing number of samples
   ndim <- c(2, 3, 5, 10, 20)
   res_sim <- res_ana <- list()
-  for (i in seq_along(nspl)) {
+  for (i in seq_along(ndim)) {
     res_sim[[i]] <- n_norm_simu(nsz, nrep, rep(0, ndim[i]), rep(0.2, ndim[i]),
       rep(1, ndim[i]), rep(1, ndim[i]))
     res_ana[[i]] <- mu_val_n(rep(0, ndim[i]), rep(.2, ndim[i]), 1, nsz)
@@ -129,7 +125,7 @@ plot_si <- function(filename, seqx, res_sim, res_ana, cex_pt = 1.1) {
 plot_si2 <- function(filename, seqx, res_sim, res_ana, seqx2, res_sim2,
   res_ana2, cex_pt = 1.1) {
   png(filename, width = 10, height = 5, units = "in", res = 600)
-    par(mfrow = c(1, 2), las = 1, bty = "l", mar = c(4.25, 4.25, 2.5, 0), mgp = c(2.6, .65, 0))
+    par(mfrow = c(1, 2), las = 1, bty = "l", mar = c(4.25, 4.25, 2, 0), mgp = c(2.6, .65, 0))
     # left panel
     n <- length(res_sim)
     pal <- colorRampPalette(c("black", "grey80"))(n)
@@ -150,18 +146,20 @@ plot_si2 <- function(filename, seqx, res_sim, res_ana, seqx2, res_sim2,
       points(seqx2, res_sim2[[i]], cex = cex_pt, pch = 19, col = pal[i])
       lines(seqx2, res_ana2[[i]], col = 2, lwd = 1.4)
     }
-    mtext("(b)", 3, at = 0, font = 2, line = 1.1, cex = 1.2)
+    mtext("(b)", 3, at = 0, font = 2, line = 1.01, cex = 1.2)
   dev.off()
 }
 
 
-plot_log_ratio <- function(filename) {
-  n <- c(1, 2.5, 5, 10, 25)
+plot_figS2 <- function(filename, seqx, res_sim, res_ana, cex_pt = 1.1) {
+  n <- c(1, 2, 5, 10, 25)
   pal <- colorRampPalette(c("black", "grey80"))(length(n))
   sqx <- seq(0.01, 1, .01)
   sqxx <- c(rev(-sqx), 0, sqx)
-  png(filename, width = 5.5, height = 5, units = "in", res = 600)
-    par(las = 1, bty = "l", mar = c(4.5, 4.6, 2, .5), mgp = c(3.15, .65, 0),
+
+  png(filename, width = 10, height = 5, units = "in", res = 600)
+    # part 1
+    par(mfrow = c(1, 2), las = 1, bty = "l", mar = c(4.5, 4.6, 2, 0), mgp = c(3.15, .65, 0),
       yaxs = "i", xaxs = "i", las = 1)
 
     plot(range(sqxx), c(.5, 1), type = "n", axes = FALSE, ylim = c(.49, 1.01),
@@ -176,6 +174,20 @@ plot_log_ratio <- function(filename) {
     axis(1, at = c(rev(-log10(sql)), 0, log10(sql)),
       labels = c(c(0.1, 0.2, 0.5), 1, sql))
     box(bty = "l")
+    mtext("(a)", 3, at = -1, font = 2, line = 1, cex = 1.2)
+
+    # part 2
+    par(las = 1, bty = "l", mar = c(4.5, 3.6, 2, 1), mgp = c(2.6, .65, 0),   yaxs = "r", xaxs = "r")
+    n <- length(res_sim)
+    pal <- colorRampPalette(c("black", "grey80"))(n)
+    plot(range(seqx), y = c(.5, 1), cex = cex_pt, pch = 19, type = "n",
+        xlab = "Sample size", ylab = "")
+    for (i in seq_len(n)) {
+      points(seqx, res_sim[[i]], cex = cex_pt, pch = 19, col = pal[i])
+      lines(seqx, res_ana[[i]], col = 2, lwd = 1.4)
+    }
+    mtext("(b)", 3, at = 0, font = 2, line = 1, cex = 1.2)
+
   dev.off()
   invisible(NULL)
 }
