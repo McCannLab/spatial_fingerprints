@@ -85,9 +85,10 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
 
 
 
+# Fig. S7 is very similar to Fig. 3 (graphically speaking) that is why I added it here.
 
-
-scr_figSX <- function() {
+#' @export
+scr_figS7 <- function() {
 
   ## Helper functions
   get_res <- function(file) {
@@ -105,11 +106,11 @@ scr_figSX <- function() {
     box()
   }
 
-  addlet <- function(let) text(1, 0.98, let, cex = 1.2, font = 2)
+  addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
+  add_vl <- function() abline(v = 17, lwd = 1.2, col = "#f63267", lty = 2)
 
   ## Very similar => fig S
-
   idf <- c(1:3, 5, 10, 15)
   files_lda <- sprintf("output/res_lda_nb/ndistr/ndistr_lda_%02d.rds", idf)
   files_nb <- sprintf("output/res_lda_nb/ndistr/ndistr_nb_%02d.rds", idf)
@@ -121,8 +122,8 @@ scr_figSX <- function() {
   # res_ml) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
 
   output_dir("output/figs")
-  msgInfo("Creating figure SX")
-  png("output/figs/figSX.png", width = 183, height = 70, units = "mm", res = 600)
+  msgInfo("Creating figure S7")
+  png("output/figs/figS7.png", width = 183, height = 70, units = "mm", res = 600)
 
   par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1, 0.4), mgp = c(2.25, 0.6, 0))
 
@@ -139,25 +140,30 @@ scr_figSX <- function() {
   }
   addlet("a")
   addaxesD()
+  add_vl()
 
   # nb
-  plot(range(sqd), c(0.33, 1), type = "n", xlab = "Noise", ylab = "", axes = FALSE)
+  plot(range(sqd), c(0.33, 1), type = "n", xlab = "Size of the training set", ylab = "", axes = FALSE)
   for (i in seq_len(nf)) {
     val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
     lines(sqd, val, pch = 19, col = pal[i], lwd = 0.7)
     points(sqd, val, pch = 19, col = pal[i], cex = 0.8)
   }
-  addaxesD()
   addlet("b")
+  addaxesD()
+  add_vl()
+
 
   # ml
   plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "")
   addlet("c")
+  add_vl()
+  #
   legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n")
 
   dev.off()
 
-  msgSuccess_fig("SX", "output/figs")
+  msgSuccess_fig("S7", "output/figs")
   invisible(0)
 
 }
