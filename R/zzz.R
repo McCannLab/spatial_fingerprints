@@ -15,7 +15,7 @@
 #' @importFrom stats aggregate predict rnorm sd coefficients deviance
 #' @importFrom stats dist lm nls
 #' @importFrom sf st_as_sf st_geometry
-#' @importFrom utils combn write.csv
+#' @importFrom utils combn write.csv read.table
 #' @importFrom geometry intersectn
 
 NULL

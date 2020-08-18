@@ -51,7 +51,7 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
 
 
   ## Dissimilarity - MU with 2, 5 and 10 observations
-  msgInfo("Running simulations for figure S4")
+  msgInfo("Running simulations for figure S3")
 
   # results for an increasing number of samples
   ndim <- c(2, 3, 5, 10, 20)
@@ -71,14 +71,15 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
     res_ana_dim[[i]] <- ana_dim(0, .2, 1, 1:50, nspl[i])
   }
 
-  plot_si2("output/figS4.png", nsz, res_sim, res_ana, 1:50, res_dim, res_ana_dim)
-  msgSuccess_fig("S4")
+  plot_si2("output/figS3.png", nsz, res_sim, res_ana, 1:50, res_dim, res_ana_dim)
+  msgSuccess_fig("S3")
 
 
   ## Correlation 2-10
-  msgInfo("Running simulations for figure S5")
-  scr_corr2("output/figS5.png", nrep2, rerun)
-  msgSuccess_fig("S5")
+  msgInfo("Running simulations for figure S4")
+  scr_corr2("output/figS4.png", nrep2, rerun)
+  msgSuccess_fig("S4")
+
 
   ## Correlation 1-10
   msgInfo("Running simulations for figure S6")
@@ -91,7 +92,7 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
       package = "spatialfingerprints"))
   }
 
-  png("output/figS6.png", width = 5.5, height = 5, units = "in", res = 600)
+  png("output/figS5.png", width = 5.5, height = 5, units = "in", res = 600)
     par(mar = c(4.5, 4.5, 1, 1), las = 1)
     plot(res$dim-res$cor, res$res, pch = 19, cex = .7, lwd = 2, lend = 1,
       ann = FALSE, axes = FALSE, ylim = c(.6, 1), yaxs = "i")
@@ -100,7 +101,7 @@ scr_theory <- function(nrep = 1e4, nrep2 = 1e5, mx_sp_sz = 50, rerun = FALSE) {
     box(bty = "l", lwd = 1.2)
     title(xlab = "Dimensionality", ylab = TeX("E(\\[A_1|S\\])"))
   dev.off()
-  msgSuccess_fig("S6")
+  msgSuccess_fig("S5")
 
   invisible(NULL)
 }

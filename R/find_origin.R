@@ -3,7 +3,7 @@
 #' @param method statistical approach, either "lda", "nb" or "ml".
 #' @param df_dat bio-tracer data sets. Note that by default, it loads `df_all()`
 #' (see [get_data_ready()]).
-#' @param ndistr number of sample used to build baseline biotracer distributions.
+#' @param ndistr number of sample used to build baseline bio-tracer distributions.
 #' @param nsample number of samples.
 #' @param noise noise to be added.
 #' @param col_ids ids (name or integer) of columns to be used (select bio-tracers).
