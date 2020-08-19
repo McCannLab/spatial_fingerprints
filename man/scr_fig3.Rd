@@ -18,7 +18,7 @@ scr_figS7()
 \item{file_ml}{Path to results file (a rds file) for MLP.}
 }
 \description{
-Code to reproduce figure 3 (noise addition). Also
+Code to reproduce figure 3 (noise addition). Also as the code to generate Fig. S7 is very similar, we added it here.
 }
 \section{Functions}{
 \itemize{

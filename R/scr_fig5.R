@@ -5,21 +5,32 @@
 #' @param file path to results for individual performances as well as performances of all pairs and triplets.
 #' @param meth a character string that describes the methods, used in the name of files that include the tables exported.
 #' @param ind indices of the figures generated.
-
+#' @param vc_pos1,vc_pos2 positions of number (labels) on the first figure
+#' generated (left and right panel respectively). If `NULL` then the values
+#' selected for the figure in the main text are used.
 #' @export
 
+# This is how Fig S8-S10 have been generated.
+# po1 <- rep(3, 17)
+# po1[c(2, 9)] <- 4
+# po1[c(11:12, 15)] <- 2
+# po1[c(7, 10, 14, 16)] <- 1
+# po2 <- po1
+# po2[10] <- 4
+# po2[6] <- 2
+# scr_fig5("output/res_lda_nb/all123/res_nb_123.rds", meth = "nb", ind = c("S8", "S9", "S10"), po1, po2)
 
-scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "lda",
-  ind = 5:7) {
+scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
+  meth = "nb", ind = 5:7, vc_pos1 = NULL, vc_pos2 = NULL) {
 
   tmp <- lapply(readRDS(file), function(x) apply(x$mean, 3, function(y) mean(diag(y))))
 
   hh <- get_data_ready()
-  res_ind <- data.frame(perf_ind = tmp[[1]], var = 0, var_wtn = 0, var_btw = 0,
-    mean_distb = 0  # distance between centroids
-)
+  res_ind <- data.frame(perf_ind = tmp[[1]], var = 0, var_wtn = 0,
+    var_btw = 0, mean_distb = 0  # distance between centroids
+  )
 
-
+  msgInfo("Computing inertia and data overlap")
   # intertia inter / intra + distance between points
   for (i in 3:19) {
     res_ind$var[i - 2] <- sum(hh[, i]^2)
@@ -83,7 +94,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
   output_dir()
   cat(kable(tbl2, row.names = FALSE), file = paste0("output/pairs10_", meth, ".md"), sep = "\n")
   cat(kable(tbl3, row.names = FALSE), file = paste0("output/triplets10_", meth, ".md"), sep = "\n")
-
+  msgSuccess("Tables exported")
 
   colr <- "#f63267"
 
@@ -91,35 +102,44 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
     labels = NA)
 
 
-  png("output/figs/fig5.png", width = 130, height = 60, units = "mm", res = 600)
+  png(paste0("output/figs/fig", ind[1], ".png"), width = 130, height = 60,
+    units = "mm", res = 600)
   layout(matrix(1:3, ncol = 3), widths = c(1, 1, 0.35))
   par(las = 1, mar = c(3.2, 3.8, 1, 0), mgp = c(2.5, 0.7, 0), cex.axis = 0.8, cex.lab = 0.9)
 
-  vc_pos <- rep(3, 17)
-  vc_pos[c(8, 13, 9)] <- 1
-  vc_pos[c(3, 14, 16)] <- 2
-  vc_pos[c(6, 11, 15, 13)] <- 4
+  if (is.null(vc_pos1)) {
+    vc_pos1 <- rep(3, 17)
+    vc_pos1[c(8, 13, 9)] <- 1
+    vc_pos1[c(3, 14, 16)] <- 2
+    vc_pos1[c(6, 11, 15, 13)] <- 4
+  }
+
   rgy <- c(0.3, 0.6)
   # plot(apply(abs(res_ind[,-1]), 1, mean), res_ind[,1], pch = 19)
   palg <- c(rep("grey75", 3), rep("grey25", 14))
   dpalg <- sapply(palg, darken, 25)
-  #
+  ## P1
   plot(100 * res_ind$var_btw/89, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
     cex = 0.9, ylim = rgy, xlim = 100 * c(0, 0.55), xlab = "", ylab = "Overall performance")
   par(mgp = c(2, 0.7, 0))
   title(xlab = "Inter-regions variance (%)")
-  text(100 * res_ind$var_btw/89, res_ind$perf_ind, 1:17, pos = vc_pos, offset = 0.3,
+  text(100 * res_ind$var_btw/89, res_ind$perf_ind, 1:17, pos = vc_pos1, offset = 0.3,
     col = palg, cex = 0.8)
   add_ticks(seq(5, 55, 5))
   mtext("a", 3, at = 0, font = 2, cex = 0.8)
-  ##
-  vc_pos[c(3, 6, 10)] <- 1
-  vc_pos[c(1)] <- 4
-  vc_pos[c(8:9, 16)] <- 3
+
+  ## P2
+  if (is.null(vc_pos2)) {
+    vc_pos2 <- vc_pos1
+    vc_pos2[c(3, 6, 10)] <- 1
+    vc_pos2[c(1)] <- 4
+    vc_pos2[c(8:9, 16)] <- 3
+  }
   plot(res_ind$mean_distb, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
-    ylim = rgy, xlab = "", ylab = "", cex = 0.9)
+    ylim = rgy, xlim = range(res_ind$mean_distb) + c(-.03, 0), xlab = "",
+    ylab = "", cex = 0.9)
   title(xlab = "Mean distance between centroids")
-  text(res_ind$mean_distb, res_ind$perf_ind, 1:17, pos = vc_pos, offset = 0.3,
+  text(res_ind$mean_distb, res_ind$perf_ind, 1:17, pos = vc_pos2, offset = 0.3,
     col = palg, cex = 0.8)
   add_ticks(seq(0.25, 3.25, 0.5))
   mtext("b", 3, at = 0, font = 2, cex = 0.8)
@@ -133,9 +153,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
 
   dev.off()
 
-  msgSuccess_fig("5", "output/figs")
-
-
+  msgSuccess_fig(ind[1], "output/figs")
 
 
 
@@ -145,7 +163,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
     par(mgp = c(1.8, 0.7, 0))
   }
 
-  png("output/figs/fig6.png", width = 89, height = 100, units = "mm", res = 600)
+  png(paste0("output/figs/fig", ind[2], ".png"), width = 89, height = 100, units = "mm", res = 600)
 
   par(mfrow = c(2, 2), yaxs = "i", las = 1, mar = c(3.8, 4, 1.6, 0.5), mgp = c(1.8,
     0.7, 0), cex = 0.45)
@@ -183,8 +201,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
 
   dev.off()
 
-  msgSuccess_fig("6", "output/figs")
-
+  msgSuccess_fig(ind[2], "output/figs")
 
 
 
@@ -194,7 +211,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
       "%"), offset = 0.1)
   }
 
-  png("output/figs/fig7.png", width = 89, height = 100, units = "mm", res = 600)
+  png(paste0("output/figs/fig", ind[3], ".png"), width = 89, height = 100, units = "mm", res = 600)
 
   layout(rbind(c(1, 2), 3))
   par(yaxs = "i", las = 1, mar = c(4, 4, 1.5, 0.5), mgp = c(2.5, 0.65, 0), cex = 0.45)
@@ -236,7 +253,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds", meth = "
 
   dev.off()
 
-  msgSuccess_fig("7", "output/figs")
+  msgSuccess_fig(ind[3], "output/figs")
   invisible(0)
 
 }

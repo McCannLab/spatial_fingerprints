@@ -6,8 +6,10 @@
 \usage{
 scr_fig5(
   file = "output/res_lda_nb/all123/res_lda_123.rds",
-  meth = "lda",
-  ind = 5:7
+  meth = "nb",
+  ind = 5:7,
+  vc_pos1 = NULL,
+  vc_pos2 = NULL
 )
 }
 \arguments{
@@ -16,6 +18,10 @@ scr_fig5(
 \item{meth}{a character string that describes the methods, used in the name of files that include the tables exported.}
 
 \item{ind}{indices of the figures generated.}
+
+\item{vc_pos1, vc_pos2}{positions of number (labels) on the first figure
+generated (left and right panel respectively). If \code{NULL} then the values
+selected for the figure in the main text are used.}
 }
 \description{
 Code to reproduce figures 5, 6 and 7 as well as Figure S8-S10.
