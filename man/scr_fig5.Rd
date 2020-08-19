@@ -4,11 +4,19 @@
 \alias{scr_fig5}
 \title{Figures 5, 6 and 7}
 \usage{
-scr_fig5(file = "output/res_lda_nb/all123/res_lda_123.rds")
+scr_fig5(
+  file = "output/res_lda_nb/all123/res_lda_123.rds",
+  meth = "lda",
+  ind = 5:7
+)
 }
 \arguments{
 \item{file}{path to results for individual performances as well as performances of all pairs and triplets.}
+
+\item{meth}{a character string that describes the methods, used in the name of files that include the tables exported.}
+
+\item{ind}{indices of the figures generated.}
 }
 \description{
-Code to reproduce figures 5, 6 and 7.
+Code to reproduce figures 5, 6 and 7 as well as Figure S8-S10.
 }

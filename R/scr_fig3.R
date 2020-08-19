@@ -1,6 +1,6 @@
 #' Figure 3
 #'
-#' Code to reproduce figure 3 (noise addition).
+#' Code to reproduce figure 3 (noise addition). Also as the code to generate Fig. S7 is very similar, we added it here.
 #'
 #' @param path Path to results files for LDA and NBC.
 #' @param file_ml Path to results file (a rds file) for MLP.
@@ -85,8 +85,8 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
 
 
 
-# Fig. S7 is very similar to Fig. 3 (graphically speaking) that is why I added it here.
 
+#' @describeIn scr_fig3 Code to reproduce figure S7.
 #' @export
 scr_figS7 <- function() {
 

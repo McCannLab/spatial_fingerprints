@@ -5,6 +5,7 @@
 #' @importFrom grDevices colorRampPalette dev.off png
 #' @importFrom inSilecoMisc msgInfo msgSuccess scaleWithin keepLetters
 #' @importFrom inSilecoMisc seqRg seqCol adjustStrings
+#' @importFrom knitr kable
 #' @importFrom ks Hpi kde
 #' @importFrom latex2exp TeX
 #' @importFrom MASS lda

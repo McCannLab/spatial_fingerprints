@@ -2,12 +2,15 @@
 % Please edit documentation in R/scr_fig3.R
 \name{scr_fig3}
 \alias{scr_fig3}
+\alias{scr_figS7}
 \title{Figure 3}
 \usage{
 scr_fig3(
   path = "output/res_lda_nb/noise/",
   file_ml = "output/res_f/res_combn_ml_nbio.rds"
 )
+
+scr_figS7()
 }
 \arguments{
 \item{path}{Path to results files for LDA and NBC.}
@@ -15,5 +18,10 @@ scr_fig3(
 \item{file_ml}{Path to results file (a rds file) for MLP.}
 }
 \description{
-Code to reproduce figure 3 (noise addition).
+Code to reproduce figure 3 (noise addition). Also
 }
+\section{Functions}{
+\itemize{
+\item \code{scr_figS7}: Code to reproduce figure S7.
+}}
+
