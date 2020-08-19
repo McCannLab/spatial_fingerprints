@@ -99,9 +99,9 @@ scr_figS7 <- function() {
   }
 
   addaxesD <- function() {
-    sq <- seq(1, 23, 3)
-    axis(1, at = setdiff(1:23, sq), labels = NA, lwd = 0, lwd.ticks = 0.25, tck = -0.025)
-    axis(1, at = sq, labels = sq + 3, lwd = 0, lwd.ticks = 0.5)
+    sq <- seq(1, 21, 5)
+    axis(1, at = setdiff(1:21, sq), labels = NA, lwd = 0, lwd.ticks = 0.25, tck = -0.025)
+    axis(1, at = sq, labels = sq + 4, lwd = 0, lwd.ticks = 0.5)
     axis(2, lwd = 0, lwd.ticks = 0.5)
     box()
   }
@@ -111,7 +111,7 @@ scr_figS7 <- function() {
   add_vl <- function() abline(v = 17, lwd = 1.2, col = "#f63267", lty = 2)
 
   ## Very similar => fig S
-  idf <- c(1:3, 5, 10, 15)
+  idf <- c(1:2, 5, 10, 15)
   files_lda <- sprintf("output/res_lda_nb/ndistr/ndistr_lda_%02d.rds", idf)
   files_nb <- sprintf("output/res_lda_nb/ndistr/ndistr_nb_%02d.rds", idf)
   nf <- length(idf)
@@ -127,7 +127,7 @@ scr_figS7 <- function() {
 
   par(mfrow = c(1, 3), las = 1, mar = c(4, 3.2, 1, 0.4), mgp = c(2.25, 0.6, 0))
 
-  sqd <- 1:23
+  sqd <- 1:21
 
   ## lda
   plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "Overall performance",
@@ -135,6 +135,7 @@ scr_figS7 <- function() {
   pal <- colorRampPalette(c("grey10", "grey70"))(nf)
   for (i in seq_len(nf)) {
     val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
+    val <- val[-c(1, length(val))]
     lines(sqd, val, pch = 19, col = pal[i], lwd = 0.7)
     points(sqd, val, pch = 19, col = pal[i], cex = 0.8)
   }
@@ -146,6 +147,7 @@ scr_figS7 <- function() {
   plot(range(sqd), c(0.33, 1), type = "n", xlab = "Size of the training set", ylab = "", axes = FALSE)
   for (i in seq_len(nf)) {
     val <- unlist(lapply(get_res(files_nb[[i]]), function(x) mean(diag(x))))
+    val <- val[-c(1, length(val))]
     lines(sqd, val, pch = 19, col = pal[i], lwd = 0.7)
     points(sqd, val, pch = 19, col = pal[i], cex = 0.8)
   }
@@ -159,7 +161,8 @@ scr_figS7 <- function() {
   addlet("c")
   add_vl()
   #
-  legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n")
+  legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n",
+    ncol = 5, cex = 1.12)
 
   dev.off()
 

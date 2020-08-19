@@ -34,7 +34,7 @@ scr_figS6 <- function() {
     "prob")
   res_ml <- aggregate(prob ~ noise * augment, mean, data = tmp[tmp$id_reg_test ==
     tmp$id_reg_true, ])
-  plot_figS6(res_ml, un, pal, vc_lwd, let = "(b)")
+  plot_figS6(res_ml, un, pal, vc_lwd, let = "b")
 
   # All bio-tracers
   tmp <- read.table("output/res_ml/res_train_all.txt")
@@ -42,7 +42,7 @@ scr_figS6 <- function() {
     "prob")
   res_ml <- aggregate(prob ~ noise * augment, mean, data = tmp[tmp$id_reg_test ==
     tmp$id_reg_true, ])
-  plot_figS6(res_ml, un, pal, vc_lwd, let = "(c)")
+  plot_figS6(res_ml, un, pal, vc_lwd, let = "c")
 
   dev.off()
   msgSuccess_fig("S6", "output/figs")
@@ -52,7 +52,7 @@ scr_figS6 <- function() {
 
 
 
-plot_figS6 <- function(res_ml, un, pal, vc_lwd, let = "(a)", ylab = "") {
+plot_figS6 <- function(res_ml, un, pal, vc_lwd, let = "a", ylab = "") {
   plot(c(0, 3.7), c(0.25, 1), type = "n", xlab = "Augmentation", ylab = ylab, axes = FALSE)
   axis(2, lwd = 0, lwd.ticks = 1)
   axis(1, at = log10(res_ml$augment), labels = res_ml$augment, lwd = 0, lwd.ticks = 1)
