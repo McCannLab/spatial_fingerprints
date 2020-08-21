@@ -6,10 +6,13 @@
 \usage{
 scr_fig5(
   file = "output/res_lda_nb/all123/res_lda_123.rds",
-  meth = "nb",
+  meth = c("lda", "nbc", "mlp"),
   ind = 5:7,
   vc_pos1 = NULL,
-  vc_pos2 = NULL
+  vc_pos2 = NULL,
+  xl1 = c(0.3, 0.72),
+  yl1 = c(0.3, 0.85),
+  adj5b = c(-0.03, 0)
 )
 }
 \arguments{
@@ -22,6 +25,10 @@ scr_fig5(
 \item{vc_pos1, vc_pos2}{positions of number (labels) on the first figure
 generated (left and right panel respectively). If \code{NULL} then the values
 selected for the figure in the main text are used.}
+
+\item{yl1, xl1}{xlim and ylim use in various figures.}
+
+\item{adj5b}{Vector to adjust the xlim on Fig.5 panel b.}
 }
 \description{
 Code to reproduce figures 5, 6 and 7 as well as Figure S8-S10.

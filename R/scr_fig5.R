@@ -8,6 +8,8 @@
 #' @param vc_pos1,vc_pos2 positions of number (labels) on the first figure
 #' generated (left and right panel respectively). If `NULL` then the values
 #' selected for the figure in the main text are used.
+#' @param yl1,xl1 xlim and ylim use in various figures.
+#' @param adj5b Vector to adjust the xlim on Fig.5 panel b.
 #' @export
 
 # This is how Fig S8-S10 have been generated.
@@ -20,15 +22,35 @@
 # po2[6] <- 2
 # scr_fig5("output/res_lda_nb/all123/res_nb_123.rds", meth = "nb", ind = c("S8", "S9", "S10"), po1, po2)
 
-scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
-  meth = "nb", ind = 5:7, vc_pos1 = NULL, vc_pos2 = NULL) {
+# This is how Fig S11-S13 have been generated.
+# po1 <- rep(3, 17)
+# po1[c(6)] <- 4
+# po1[c(4, 11, 14, 16)] <- 2
+# po1[c(3, 10)] <- 1
+# po2 <- po1
+# scr_fig5("output/res_ml/ml_all123.rds", meth = "mlp", ind = c("S11", "S12", "S13"),  po1, po2, xl1 = c(0.3, 0.75), yl1 = c(0.3, 0.9), adj5b = c(-.15, 0))
 
-  tmp <- lapply(readRDS(file), function(x) apply(x$mean, 3, function(y) mean(diag(y))))
+
+scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
+  meth = c("lda", "nbc", "mlp"), ind = 5:7, vc_pos1 = NULL, vc_pos2 = NULL, xl1 = c(0.3, 0.72), yl1 = c(0.3, 0.85), adj5b = c(-0.03, 0)) {
+
+  meth <- match.arg(meth)
+  if (meth == "mlp") {
+    # if results are for the Multi-Layer Perceptron
+    tmp <- readRDS(file)
+    tmp <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
+    tmp <- aggregate(prob ~ nbio*id_comb, data = tmp, FUN = mean)
+  } else {
+    tmp <- lapply(readRDS(file), function(x) apply(x$mean, 3, function(y) mean(diag(y))))
+  }
 
   hh <- get_data_ready()
-  res_ind <- data.frame(perf_ind = tmp[[1]], var = 0, var_wtn = 0,
+  res_ind <- data.frame(perf_ind = rep(NA_real_, 17), var = 0, var_wtn = 0,
     var_btw = 0, mean_distb = 0  # distance between centroids
   )
+  if (meth == "mlp")  {
+    res_ind$perf_ind <- tmp[tmp$nbio == 1, "prob"]
+  } else res_ind$perf_ind <- tmp[[1L]]
 
   msgInfo("Computing inertia and data overlap")
   # intertia inter / intra + distance between points
@@ -48,7 +70,11 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
   }
 
   # Same work for pair of bio-tracers
-  comb_bio2 <- data.frame(t(combn(3:19, 2)), perf = tmp[[2]])
+  comb_bio2 <- data.frame(t(combn(3:19, 2)), perf = NA_real_)
+  if (meth == "mlp")  {
+    comb_bio2$perf <- tmp[tmp$nbio == 2, "prob"]
+  } else comb_bio2$perf <- tmp[[2L]]
+
   comb_bio2$max_perf1 <- apply(comb_bio2, 1, function(x) getmax(x[1:2], perf = res_ind$perf_ind))
   comb_bio2$mean_perf2 <- apply(comb_bio2, 1, function(x) getsum(x[1:2], perf = res_ind$perf_ind))
   comb_bio2$categ <- apply(comb_bio2, 1, function(x) get_categ2(x[1], x[2]))
@@ -67,7 +93,11 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
       2)])
   }
 
-  comb_bio3 <- data.frame(t(combn(3:19, 3)), perf = tmp[[3]])
+  comb_bio3 <- data.frame(t(combn(3:19, 3)), perf = NA_character_)
+  if (meth == "mlp")  {
+    comb_bio3$perf <- tmp[tmp$nbio == 3, "prob"]
+  } else comb_bio3$perf <- tmp[[3L]]
+
   names(comb_bio3)[1:3] <- paste0("bio", 1:3)
   comb_bio3$max_perf2 <- apply(comb_bio3, 1, function(x) getval(x[1:3]))
   comb_bio3$mean_perf2 <- apply(comb_bio3, 1, function(x) getval(x[1:3], FUN = mean))
@@ -136,7 +166,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
     vc_pos2[c(8:9, 16)] <- 3
   }
   plot(res_ind$mean_distb, res_ind$perf_ind, bg = palg, col = dpalg, pch = 21,
-    ylim = rgy, xlim = range(res_ind$mean_distb) + c(-.03, 0), xlab = "",
+    ylim = rgy, xlim = range(res_ind$mean_distb) + adj5b, xlab = "",
     ylab = "", cex = 0.9)
   title(xlab = "Mean distance between centroids")
   text(res_ind$mean_distb, res_ind$perf_ind, 1:17, pos = vc_pos2, offset = 0.3,
@@ -170,14 +200,14 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
 
   ## P1
   plot(comb_bio2$max_perf1, comb_bio2$perf, pch = 20, col = "grey10", xlab = "Best individual performance",
-    ylab = "", xlim = c(0.3, 0.72), ylim = c(0.3, 0.85), cex = 0.6)
+    ylab = "", xlim = xl1, ylim = yl1, cex = 0.6)
   add_ylab("Overall performance of a pair of bio-tracers")
   abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
   mtext("a", 3, at = 0.3, font = 2, cex = 0.7)
 
   ## P2
   plot(comb_bio3$max_perf2, comb_bio3$perf, pch = 20, col = "grey10", xlab = "Best pair performance",
-    ylab = "", xlim = c(0.3, 0.72), ylim = c(0.3, 0.85), cex = 0.6)
+    ylab = "", xlim = xl1, ylim = yl1, cex = 0.6)
   add_ylab("Overall performance of a triplet")
   abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
   mtext("b", 3, at = 0.3, font = 2, cex = 0.7)
@@ -185,16 +215,15 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
   ## P3
   par(mar = c(4, 4, 1.4, 0.5))
   plot(0.5 * comb_bio2$mean_perf2, comb_bio2$perf, pch = 20, col = "grey10", xlab = c("Average overall performance",
-    "of the bio-tracers in the pair"), ylab = "", xlim = c(0.3, 0.72), ylim = c(0.3,
-    0.85), cex = 0.6)
+    "of the bio-tracers in the pair"), ylab = "", xlim = xl1, ylim = yl1, cex = 0.6)
   add_ylab("Performance of a pair of bio-tracers")
   abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
   mtext("c", 3, at = 0.3, font = 2, cex = 0.7)
 
   ## P4
   plot(comb_bio3$mean_perf2, comb_bio3$perf, pch = 20, col = "grey10", xlab = c("Average over performance",
-    "of the pair of bio-tracers in the triplet"), ylab = "", xlim = c(0.3, 0.72),
-    ylim = c(0.3, 0.85), cex = 0.6)
+    "of the pair of bio-tracers in the triplet"), ylab = "", xlim = xl1,
+    ylim = yl1, cex = 0.6)
   add_ylab("Performance of a triplet")
   abline(a = 0, b = 1, lty = 3, col = colr, lwd = 1)
   mtext("d", 3, at = 0.3, font = 2, cex = 0.7)
@@ -218,7 +247,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
 
   prop2 <- comb_bio2$inert_btw/comb_bio2$inert_tot
   plot(100 * prop2, comb_bio2$perf, pch = 20, col = "grey10", xlab = "", ylab = "Overall performance of a pair of bio-tracer",
-    ylim = c(0.3, 0.82), cex = 0.8)
+    ylim = yl1, cex = 0.8)
   f <- fitexp2(comb_bio2, 100 * prop2, lty = 2, col = colr, lwd = 1)
   rsq <- 1 - deviance(f)/deviance(lm(perf ~ 1, data = comb_bio2))
   add_rsq(rsq, x = 45)
@@ -229,7 +258,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
   par(mgp = c(2.6, 0.65, 0))
   prop3 <- comb_bio3$inert_btw/comb_bio3$inert_tot
   plot(100 * prop3, comb_bio3$perf, pch = 20, col = "grey10", xlab = "", ylab = "Overall performance of a triplet",
-    ylim = c(0.3, 0.82), cex = 0.8)
+    ylim = yl1, cex = 0.8)
   f <- fitexp2(comb_bio3, 100 * prop3, lty = 2, col = colr, lwd = 1)
   rsq <- 1 - deviance(f)/deviance(lm(perf ~ 1, data = comb_bio3))
   add_rsq(rsq, x = 45)
@@ -238,8 +267,7 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
   add_ticks(seq(5, 50, 5))
 
 
-  plot(log10(comb_bio2$intersect), comb_bio2$perf, xlim = c(-2.2, -0.2), ylim = c(0.3,
-    0.82), pch = 1, cex = 0.9, ylab = "Overall performance", xlab = "log10(region overlap)",
+  plot(log10(comb_bio2$intersect), comb_bio2$perf, xlim = c(-2.2, -0.2), ylim = yl1, pch = 1, cex = 0.9, ylab = "Overall performance", xlab = "log10(region overlap)",
     lwd = 0.6)
   points(log10(comb_bio3$intersect), comb_bio3$perf, col = 1, pch = 20, cex = 0.7)
   legend("topright", legend = c("pair", "triplet"), pch = c(1, 19), bty = "n",
