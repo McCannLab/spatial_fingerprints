@@ -108,7 +108,7 @@ scr_figS7 <- function() {
 
   addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
-  add_vl <- function(v = 17) abline(v = v, lwd = 1.2, col = "#f63267", lty = 2)
+  add_vl <- function(v = 16) abline(v = v, lwd = 1.2, col = "#f63267", lty = 2)
 
   ## Very similar => fig S
   idf <- c(1:2, 5, 10, 15)
@@ -172,7 +172,7 @@ scr_figS7 <- function() {
   add_vl(v = 20)
   #
   legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n",
-    ncol = 5, cex = 1.05)
+    ncol = 5, cex = 1.025)
 
   dev.off()
 
