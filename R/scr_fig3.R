@@ -108,18 +108,20 @@ scr_figS7 <- function() {
 
   addlet <- function(let, x = 1) mtext(let, 3, at = x, cex = 1, font = 2)
 
-  add_vl <- function() abline(v = 17, lwd = 1.2, col = "#f63267", lty = 2)
+  add_vl <- function(v = 17) abline(v = v, lwd = 1.2, col = "#f63267", lty = 2)
 
   ## Very similar => fig S
   idf <- c(1:2, 5, 10, 15)
   files_lda <- sprintf("output/res_lda_nb/ndistr/ndistr_lda_%02d.rds", idf)
   files_nb <- sprintf("output/res_lda_nb/ndistr/ndistr_nb_%02d.rds", idf)
   nf <- length(idf)
+  tmp <- readRDS("output/res_ml/ml_ndistr.rds")
+  res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
+  ml_reg <- aggregate(prob~nbio*ndistr, mean, data = res_ml)
 
 
   # tmp <- readRDS('output/res_f/res_ml_nbio.rds') res_ml <- tmp[tmp$id_reg_test ==
-  # tmp$id_reg_true, ] ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data =
-  # res_ml) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
+  # tmp$id_reg_true, ]) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
 
   output_dir("output/figs")
   msgInfo("Creating figure S7")
@@ -157,12 +159,20 @@ scr_figS7 <- function() {
 
 
   # ml
-  plot(range(sqd), c(0.33, 1), type = "n", xlab = "", ylab = "")
+  plot(c(5, 25), c(0.33, 1), type = "n", xlab = "", ylab = "")
+  for (i in seq_along(idf)) {
+    cx <- ml_reg$ndistr[ml_reg$nbio == idf[i]]
+    cy <- ml_reg$prob[ml_reg$nbio == idf[i]]
+    lines(cx, cy, pch = 19, col = pal[i], lwd = 0.7)
+    points(cx, cy, pch = 19, col = pal[i], cex = 0.8)
+  }
   addlet("c")
-  add_vl()
+  axis(1, at = setdiff(5:25, seq(5, 25, 5)), labels = NA, lwd = 0,
+    lwd.ticks = .25)
+  add_vl(v = 20)
   #
   legend("bottomright", legend = idf, col = pal, pch = 19, bty = "n",
-    ncol = 5, cex = 1.12)
+    ncol = 5, cex = 1.05)
 
   dev.off()
 
