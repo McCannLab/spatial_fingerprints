@@ -1,6 +1,6 @@
 #' Figure 3
 #'
-#' Code to reproduce figure 3 (noise addition). Also as the code to generate Fig. S7 is very similar, we added it here.
+#' Code to reproduce figure 3 (noise addition).
 #'
 #' @param path Path to results files for LDA and NBC.
 #' @param file_ml Path to results file (a rds file) for MLP.
@@ -31,19 +31,22 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
   }
 
   ## reading files
-  idf <- c(1:3, 5, 10, 15)
+  idf <- c(1:2, 5, 10, 15)
+  nf <- length(idf)
   msgInfo("Reading files for figure 3")
   files_lda <- sprintf(paste0(path, "/noise_lda_%02d.rds"), idf)
   files_nb <- sprintf(paste0(path, "/noise_nb_%02d.rds"), idf)
-  nf <- length(idf)
-  # tmp <- readRDS('output/res_f/res_ml_nbio.rds') res_ml <- tmp[tmp$id_reg_test ==
-  # tmp$id_reg_true, ] ml_reg <- aggregate(prob~nbio*id_reg_true, mean, data =
-  # res_ml) ml_sam <- aggregate(prob~nbio, mean, data = res_ml)
+  tmp <- readRDS("output/res_ml/ml_noise.rds")
+  res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
+  ml_reg <- aggregate(prob ~ nbio * noise, mean, data = res_ml)
+
 
   ## Figure
   output_dir("output/figs")
   msgInfo("Creating figure 3")
   sqn <- 1:26
+  pal <- colorRampPalette(c("grey5", "grey75"))(nf)
+
 
   png("output/figs/fig3.png", width = 183, height = 70, units = "mm", res = 600)
 
@@ -52,7 +55,6 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
   ## LDA
   plot(range(sqn), c(0.33, 1), type = "n", axes = FALSE, xlab = "",
     ylab = "Overall performance")
-  pal <- colorRampPalette(c("grey5", "grey75"))(nf)
   for (i in seq_len(nf)) {
     val <- unlist(lapply(get_res(files_lda[[i]]), function(x) mean(diag(x))))
     lines(sqn, val, pch = 19, col = pal[i], lwd = 0.7)
@@ -70,8 +72,17 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
   addlet("b")
   addaxesN()
   ## MLP
-  plot(range(sqn), c(0.33, 1), type = "n", xlab = "", ylab = "")
+  plot(range(sqn), c(0.33, 1), type = "n", xlab = "", ylab = "", axes = FALSE)
+  # ml
+  for (i in seq_along(idf)) {
+    # cx <- ml_reg$noise[ml_reg$nbio == idf[i]]
+    cx <- sqn
+    cy <- ml_reg$prob[ml_reg$nbio == idf[i]]
+    lines(cx, cy, pch = 19, col = pal[i], lwd = 0.7)
+    points(cx, cy, pch = 19, col = pal[i], cex = 0.8)
+  }
   addlet("c")
+  addaxesN()
   #
   legend("topright", legend = idf, col = pal, pch = 19, bty = "n")
 
@@ -156,7 +167,6 @@ scr_figS7 <- function() {
   addlet("b")
   addaxesD()
   add_vl()
-
 
   # ml
   plot(c(5, 25), c(0.33, 1), type = "n", xlab = "", ylab = "")
