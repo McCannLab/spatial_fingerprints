@@ -170,25 +170,28 @@ getdist <- function(hh) {
   m1 <- apply(hh[1:30, ], 2, mean)
   m2 <- apply(hh[31:60, ], 2, mean)
   m3 <- apply(hh[61:90, ], 2, mean)
-  # m11 <- apply(hh[1:30, ] - matmean(m1), 2, mean)
-  # m22 <- apply(hh[31:60, ] - matmean(m2), 2, mean)
-  # m33 <- apply(hh[61:90, ] - matmean(m3), 2, mean)
+
   mean(sum((m1-m2)^2), sum((m1-m3)^2), sum((m2-m3)^2))
-  # mean(
-  #   sum((m1-m2)^2 - (m1-m11)^2 - (m2-m2)^2),
-  #   sum((m1-m3)^2 - (m1-m11)^2 - (m3-m3)^2),
-  #   sum((m2-m3)^2 - (m2-m22)^2 - (m3-m3)^2)
-  # )
+
 }
+
+getdistcentroid <- function(hh) {
+  m1 <- apply(hh[1:30, ], 2, mean)
+  m2 <- apply(hh[31:60, ], 2, mean)
+  m3 <- apply(hh[61:90, ], 2, mean)
+
+  sqrt(c(sum((m1-m2)^2), sum((m1-m3)^2), sum((m2-m3)^2)))
+}
+
+# get distance centroid
+# hh <- get_data_ready()
+# getdistcentroid(hh[, 3:19])
 
 getdist2 <- function(hh) {
   m1 <- apply(hh[1:30, ], 2, mean)
   m2 <- apply(hh[31:60, ], 2, mean)
   m3 <- apply(hh[61:90, ], 2, mean)
-  # m11 <- apply(hh[1:30, ] - matmean(m1), 2, mean)
-  # m22 <- apply(hh[31:60, ] - matmean(m2), 2, mean)
-  # m33 <- apply(hh[61:90, ] - matmean(m3), 2, mean)
-  # mean(sum((m1-m2)^2), sum((m1-m3)^2), sum((m2-m3)^2))
+
   nm <- apply(rbind(
       (hh[1:30, ] - matmean(m1))^2,
       (hh[31:60, ] - matmean(m2))^2,
@@ -202,17 +205,6 @@ getdist2 <- function(hh) {
       (hh[61:90, ] - matmean(m1))^2,
       (hh[61:90, ] - matmean(m2))^2),
       1, function(x) sqrt(sum(x)))
-
-    # print(dn)
-  # (1- mean(nm[1:30])/mean(dn[1:60]))*(1 - mean(nm[31:60])/mean(dn[61:120]))*(1- mean(nm[61:90])/mean(dn[121:180]))
-    # (1 - mean(nm[1:30])/mean(dn[1:30])) *
-    # (1 - mean(nm[1:30])/mean(dn[31:60])) *
-    # (1 - mean(nm[31:60])/mean(dn[61:90])) *
-    # (1 - mean(nm[31:60])/mean(dn[91:120])) *
-    # (1 - mean(nm[61:90])/mean(dn[121:150])) *
-    # (1 - mean(nm[61:90])/mean(dn[151:180]))
-  # mean(apply(nm, 1, function(x) sqrt(sum(x))))/mean(apply(dn, 2, function(x) sqrt(sum(x))))
-  # mean(apply(dn, 1, function(x) sqrt(sum(x))))
   mean(nm)/mean(dn)
 }
 
@@ -234,11 +226,6 @@ getintersect <- function(hh, keep = 25) {
   # max(c(i1$ch$vol, i2$ch$vol, i3$ch$vol))
 }
 
-# out <- double(16)
-# for (i in 2:17) {
-#   print(i)
-#   out[i] <- getintersect(hh[,-c(1:2)][,1:i])
-# }
 
 fitexp <- function(data, ...) {
   mod <- nls(perf ~ 1 - .66*exp(-d*mean_distb), list(d = 1), data = data)

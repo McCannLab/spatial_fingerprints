@@ -28,8 +28,10 @@ pipeline <- function() {
   # scr_fig4()
   # scr_fig5()
 
+
   msgInfo("SI Figures...")
   scr_theory()
+  scr_figS6()
   #
   invisible(NULL)
 }

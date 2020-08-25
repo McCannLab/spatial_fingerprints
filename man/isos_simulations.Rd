@@ -32,9 +32,7 @@ isos_likelihood(sample, density)
 
 \item{nrep}{an integer indicating the number of repetition (see \code{details} section).}
 
-\item{dens1}{an integer that identities the first distribution to be mixed (in \code{ls_density}).}
-
-\item{dens2}{an integer that identities the second distribution to be mixed (in \code{ls_density}).}
+\item{dens1, dens2}{an integer that identities the first (and second) distribution to be mixed (in \code{ls_density}).}
 
 \item{perc}{a vector of numeric indicating the percentage of dens1 included in the sample (assuming the remaining is made of dens2).}
 

@@ -1,4 +1,4 @@
-#' Core functions to asses overall performance of LDA, NB and ML.
+#' Core functions to asses overall performance of LDA, NBC and MLP.
 #'
 #' @param method statistical approach, either "lda", "nb" or "ml".
 #' @param df_dat bio-tracer data sets. Note that by default, it loads `df_all()`

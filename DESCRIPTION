@@ -1,9 +1,10 @@
 Package: spatialfingerprints
 Title: Research compendium
 Version: 0.0.0.9000
-Date: 2020-08-19
+Date: 2020-08-25
 Authors@R: c(
-  person("Kevin", "Cazelles", email = "kcazelle@uoguelph.ca", comment = c(ORCID = "0000-0001-6619-9874"), role = c("aut", "cre"))
+  person("Kevin", "Cazelles", email = "kcazelle@uoguelph.ca",
+  comment = c(ORCID = "0000-0001-6619-9874"), role = c("aut", "cre"))
   )
 Description: Research compendium (DOI: 2Badded).
 URL: https://github.com/McCannLab/spatial_fingerprints

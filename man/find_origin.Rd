@@ -4,7 +4,7 @@
 \alias{find_origin}
 \alias{scr_lda}
 \alias{scr_nb}
-\title{Core functions to asses overall performance of LDA, NB and ML.}
+\title{Core functions to asses overall performance of LDA, NBC and MLP.}
 \usage{
 find_origin(
   method = c("lda", "nb", "ml"),
@@ -37,7 +37,7 @@ scr_nb(df_dat, ndistr = 20, nsample = 5, noise = 0, col_ids = 3:19)
 \item{toprob}{should the output be a probability.}
 }
 \description{
-Core functions to asses overall performance of LDA, NB and ML.
+Core functions to asses overall performance of LDA, NBC and MLP.
 }
 \details{
 \itemize{

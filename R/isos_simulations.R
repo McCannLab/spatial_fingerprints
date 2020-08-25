@@ -7,8 +7,7 @@
 #' @param sample_size size of the samples to be drawn.
 #' @param sample values of a sample.
 #' @param ls_density a list of object of class [stats::density()].
-#' @param dens1 an integer that identities the first distribution to be mixed (in `ls_density`).
-#' @param dens2 an integer that identities the second distribution to be mixed (in `ls_density`).
+#' @param dens1,dens2 an integer that identities the first (and second) distribution to be mixed (in `ls_density`).
 #' @param perc a vector of numeric indicating the percentage of dens1 included in the sample (assuming the remaining is made of dens2).
 #' @param density an object of class [stats::density()].
 #' @param nrep an integer indicating the number of repetition (see `details` section).

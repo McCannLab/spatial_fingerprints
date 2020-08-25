@@ -60,9 +60,9 @@ scr_fig5 <- function(file = "output/res_lda_nb/all123/res_lda_123.rds",
     val2 <- hh[31:60, i]
     val3 <- hh[61:90, i]
     res_ind$var_wtn[i - 2] <- myvar(val1) + myvar(val2) + myvar(val3)
-    m1 <- mean(hh[1:30, i])
-    m2 <- mean(hh[31:60, i])
-    m3 <- mean(hh[61:90, i])
+    m1 <- mean(val1)
+    m2 <- mean(val2)
+    m3 <- mean(val3)
     res_ind$var_btw[i - 2] <- 30 * (m1^2 + m2^2 + m3^2)
     res_ind$mean_distb[i - 2] <- mean((m1 - m2)^2, (m1 - m3)^2, (m2 - m3)^2)
     res_ind$dist2[i - 2] <- 1/90 * sum((val1 - m2)^2 + (val1 - m3)^2, (val2 -
