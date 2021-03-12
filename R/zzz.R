@@ -1,4 +1,5 @@
 #' @importFrom cli cat_line style_underline
+#' @importFrom fs path_package
 #' @importFrom graphics abline axis box image layout lines par plot
 #' @importFrom graphics points text title legend boxplot mtext
 #' @importFrom graphicsutils plot0 gpuPalette darken

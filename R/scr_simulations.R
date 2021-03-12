@@ -48,7 +48,7 @@ simu_nbio <- function(method = c("lda", "nb", "ml"), nrep = 100, mxcb = 10,
 
 }
 
-#' @describeIn simu_nbio same as [simu_nbio()] but use pca and keep the axes ordered.
+#' @describeIn simu_nbio same as [simu_nbio()] but uses pca and keep the axes ordered.
 #' @export
 simu_nbio_order <- function(method = c("lda", "nb", "ml"), nrep = 100,
   nsample = 10, ndistr = 20, noise = 0) {

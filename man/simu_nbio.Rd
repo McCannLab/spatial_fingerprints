@@ -101,7 +101,7 @@ total number of combinations is used.
 }
 \section{Functions}{
 \itemize{
-\item \code{simu_nbio_order}: same as \code{\link[=simu_nbio]{simu_nbio()}} but use pca and keep the axes ordered.
+\item \code{simu_nbio_order}: same as \code{\link[=simu_nbio]{simu_nbio()}} but uses pca and keep the axes ordered.
 
 \item \code{simu_ndistr}: effect of the number of samples used to build the distribution.
 

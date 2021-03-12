@@ -11,7 +11,7 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
 
   ## Helper functions
   get_res <- function(file) {
-    # read diles
+    # read files
     raw <- readRDS(file)
     # remove empty elements
     raw <- Filter(Negate(is.null), raw)
@@ -36,10 +36,15 @@ scr_fig3 <- function(path = "output/res_lda_nb/noise/", file_ml = "output/res_f/
   msgInfo("Reading files for figure 3")
   files_lda <- sprintf(paste0(path, "/noise_lda_%02d.rds"), idf)
   files_nb <- sprintf(paste0(path, "/noise_nb_%02d.rds"), idf)
-  tmp <- readRDS("output/res_ml/ml_noise.rds")
-  res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
-  ml_reg <- aggregate(prob ~ nbio * noise, mean, data = res_ml)
-
+  
+  # the following steps required some RAM so there were commented out and 
+  # an intermediate file has been saved. 
+  # tmp <- readRDS("output/res_ml/ml_noise.rds")
+  # get data for which region tested in the true one
+  # res_ml <- tmp[tmp$id_reg_test == tmp$id_reg_true, ]
+  # ml_reg <- aggregate(prob ~ nbio * noise, mean, data = res_ml)
+  # saveRDS(ml_reg, "output/res_ml/ml_reg_noise.rds")
+  ml_reg <- readRDS("output/res_ml/ml_reg_noise.rds")
 
   ## Figure
   output_dir("output/figs")

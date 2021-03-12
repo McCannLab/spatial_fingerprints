@@ -7,5 +7,5 @@
 pipeline()
 }
 \description{
-Run all analyses.
+Run all analyses. Note this requires the main (and time-consuming) analyses to be run first.
 }

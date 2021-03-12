@@ -1,6 +1,6 @@
 Package: spatialfingerprints
 Title: Research compendium
-Version: 0.0.1.
+Version: 0.0.1
 Date: 2021-12-03
 Authors@R: c(
   person("Kevin", "Cazelles", email = "kcazelle@uoguelph.ca",
@@ -17,6 +17,7 @@ Imports:
     graphics,
     graphicsutils,
     grDevices,
+    fs,
     inSilecoMisc,
     knitr,
     ks,
@@ -26,6 +27,7 @@ Imports:
     mvtnorm,
     orthomap,
     progress,
+    rdryad,
     sf,
     stats,
     utils

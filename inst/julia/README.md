@@ -1,12 +1,12 @@
-# Nature Food Julia code part
+# Julia code part for simulation using ML
 
-- `helpers.jl`: core functions
-- `scripts.jl`: call core function to do simulation
-- `install.packages.jl` install packages needed
-- `main.jl` for increasing number of bio-tracers
-- `main2.jl` was used for noise and training set size
+- `helpers.jl`: core functions,
+- `scripts.jl`: call core function to do simulation,
+- `install.packages.jl` install packages needed,
+- `main.jl` for increasing number of bio-tracers,
+- `main2.jl` was used for noise and training set size.
 
-Plot were done in R. see XXX
+Plot were done in R.
 
 ## simulations
 
