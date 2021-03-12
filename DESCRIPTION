@@ -26,6 +26,7 @@ Imports:
     MASS,
     mvtnorm,
     orthomap,
+    pkgload,
     progress,
     rdryad,
     sf,
