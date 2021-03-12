@@ -1,5 +1,8 @@
 # :book: Spatial Fingerprinting - research compendium
 [![R-CMD-check](https://github.com/McCannLab/spatial_fingerprints/workflows/R-CMD-check/badge.svg)](https://github.com/McCannLab/spatial_fingerprints/actions)
+[![DOI](https://zenodo.org/badge/250544023.svg)](https://zenodo.org/badge/latestdoi/250544023)
+
+
 
 ## Installation
 
